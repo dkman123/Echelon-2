@@ -240,6 +240,13 @@ You need to email the reg key to the new users
 
 - Setup and config your Echelon to your needs
 
+---
+
+You should configure your site to use SSL
+See https://letsencrypt.org/ for more on that.
+
+---
+
 ## NOTE ##
 Please understand that there are large portions of Echelon that are unfinished. Please check back to this repo for the latest version.
 There is also spotty support for BFBC2, (rcon will not work and will most likely error)
