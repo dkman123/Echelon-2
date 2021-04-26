@@ -245,6 +245,8 @@ You need to email the reg key to the new users
 You should configure your site to use SSL
 See https://letsencrypt.org/ for more on that.
 
+Direct link to instrucitons: https://certbot.eff.org/lets-encrypt/ubuntufocal-apache
+
 ---
 
 ## NOTE ##
