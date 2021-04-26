@@ -38,6 +38,10 @@ install php prerequisites
 sudo apt install php
 sudo apt install php-mysqli
 ```
+with php7.4 you need to specify the version
+```
+sudo apt install php7.4-mysqli
+```
 
 to test php and verify extensions (not necessary)
 ```
