@@ -38,6 +38,10 @@ install php prerequisites
 sudo apt install php
 sudo apt install php-mysqli
 ```
+with php7.4 you need to specify the version
+```
+sudo apt install php7.4-mysqli
+```
 
 to test php and verify extensions (not necessary)
 ```
@@ -235,6 +239,15 @@ You need to email the reg key to the new users
 - Login to Echelon using the credentials (that were emailed to you, or displayed)
 
 - Setup and config your Echelon to your needs
+
+---
+
+You should configure your site to use SSL
+See https://letsencrypt.org/ for more on that.
+
+Direct link to instrucitons: https://certbot.eff.org/lets-encrypt/ubuntufocal-apache
+
+---
 
 ## NOTE ##
 Please understand that there are large portions of Echelon that are unfinished. Please check back to this repo for the latest version.
