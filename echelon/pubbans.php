@@ -39,7 +39,8 @@ $time = time();
 ###########################
 ######### QUERIES #########
 //$query = "SELECT c.id as client_id, c.name, p.id as ban_id, p.type, p.time_add, p.time_expire, p.reason, p.duration FROM penalties p LEFT JOIN clients c ON p.client_id = c.id WHERE p.inactive = 0 AND p.type != 'Warning' AND p.type != 'Notice' AND p.type != 'Kick' AND (p.time_expire = -1 OR p.time_expire > $time)";
-$query = "SELECT c.id as client_id, c.name, p.id as ban_id, p.type, p.time_add, p.time_expire, p.reason, p.duration FROM penalties p LEFT JOIN clients c ON p.client_id = c.id WHERE p.inactive = 0 AND p.type != 'Warning' AND (p.time_expire = -1 OR p.time_expire > $time)";
+//$query = "SELECT c.id as client_id, c.name, p.id as ban_id, p.type, p.time_add, p.time_expire, p.reason, p.duration FROM penalties p LEFT JOIN clients c ON p.client_id = c.id WHERE p.inactive = 0 AND p.type != 'Warning' AND (p.time_expire = -1 OR p.time_expire > $time)";
+$query = "SELECT c.id as client_id, c.name, MAX(p.id) AS ban_id, p.type, MAX(p.time_add) AS time_add, MAX(p.time_expire) AS time_expire, p.reason, MAX(p.duration) AS duration FROM penalties p LEFT JOIN clients c ON p.client_id = c.id WHERE p.inactive = 0 AND (p.type NOT IN ('Warning', 'Kick') OR (p.type = 'Kick' AND p.reason LIKE 'BANLIST%')) AND (p.time_expire = -1 OR p.time_expire > $time) GROUP BY c.id, c.name, p.type, p.reason";
 
 $query .= sprintf(" ORDER BY %s ", $orderby);
 
