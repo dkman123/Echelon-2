@@ -365,9 +365,8 @@ EOD;
 						$p_name_read = 'PBSS';
 					
 					if($p_id != "") :
-						echo '<td class="perm-td"><label class="col-sm-8 my-2" for="'. $p_name .'">' . $p_name_read . '</label><div class="col"><label class="switch" for="'. $p_name .'"><input id="'.$p_name.'" type="checkbox" name="' . $p_name . '" ' . $checked . ' /><span class="slider round"></span></label></div>'; 
-						tooltip($p_desc);
-						echo '</td>';						
+                                                echo '<td class="perm-td" title="'. $p_desc .'"><label class="col-sm-8 my-2" for="'. $p_name .'">' . $p_name_read . '</label><div class="col"><label class="switch" for="'. $p_name .'"><input id="'.$p_name.'" type="checkbox" name="' . $p_name . '" ' . $checked . ' /><span class="slider round"></span></label></div>'; 
+                                	     	echo '</td>';						
 					endif;
 					
 					$in++;
@@ -439,8 +438,7 @@ EOD;
 					$p_name_read = ucwords($p_name_read);
 					
 					if($p_id != "") :
-                        echo '<td class="perm-td"><label class="col-sm-8 my-2" for="'. $p_name .'">' . $p_name_read . '</label><div class="col"><label class="switch" for="'. $p_name .'"><input id="'.$p_name.'" type="checkbox" name="' . $p_name . '"/><span class="slider round"></span></label></div>'; 
-						tooltip($p_desc);
+                                                echo '<td class="perm-td" title="'. $p_desc . '"><label class="col-sm-8 my-2" for="'. $p_name .'">' . $p_name_read . '</label><div class="col"><label class="switch" for="'. $p_name .'"><input id="'.$p_name.'" type="checkbox" name="' . $p_name . '"/><span class="slider round"></span></label></div>'; 
 						echo '</td>';						
 					endif;
 					
