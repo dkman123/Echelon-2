@@ -23,7 +23,7 @@ if($cid == '') {
 
 ## Get Client information ##
 $query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name
-		  FROM clients c LEFT JOIN `groups` g ON c.group_bits = g.id WHERE c.id = ? LIMIT 1";
+		  FROM clients c LEFT JOIN groups g ON c.group_bits = g.id WHERE c.id = ? LIMIT 1";
 $stmt = $db->mysql->prepare($query) or die('Database Error '. $db->mysql->error);
 $stmt->bind_param('i', $cid);
 $stmt->execute();
@@ -111,6 +111,8 @@ require 'inc/header.php';
 							<a href="https://www.ipinfo.io/<?php echo $ip; ?>" title="IP Info" target="_blank"><img src="images/ipinfo.jpg" width="16" height="16" alt="IPInfo" /></a>
 								&nbsp;&nbsp;
                                                         <a href="http://check.getipintel.net/check.php?ip=<?php echo $ip; ?>&contact=<?php echo $getipintel_email; ?>" title="Get IP Intel http://getipintel.net/#web" target="_blank"><img src="images/getipintel.png" width="16" height="16" alt="GetIPIntel" /></a>
+								&nbsp;&nbsp;
+                                                        <a href="https://proxycheck.io/v2/<?php echo $ip ?>?vpn=1&asn=1<?php echo (PROXYCHECKioKEY != "" ? "&key=public-" . constant("PROXYCHECKioKEY") : "") ?>" title="Proxy Check.io <?php echo (PROXYCHECKioKEY != "" ? "" : "Key is blank. Define PROXYCHECKioKEY in inc/config.php. Use double quotes") ?>" target="_blank"><img src="images/proxycheck.png" width="16" height="16" alt="ProxyCheck" /></a>
 					<?php
 						} else {
 							echo "(No IP address available)";
@@ -492,7 +494,7 @@ EOD;
 		$stmt = $db->mysql->prepare($query) or die('IP-Alias Database Query Error'. $db->mysql->error);
 		$stmt->bind_param('i', $cid);
 		$stmt->execute();
-		$stmt->bind_result($alias, $num_used, $time_add, $time_edit);
+		$stmt->bind_result($ip, $num_used, $time_add, $time_edit);
 		
 		$stmt->store_result(); // needed for the $stmt->num_rows call
 
@@ -505,25 +507,30 @@ EOD;
 				
 				$alter = alter();
 				
-				$token_del = genFormToken('del'.$id);		
-				// setup heredoc (table data)			
+				$token_del = genFormToken('del'.$id);	
+                                // ProxyCheckKey and ProxyCheckTitle
+                                $pck = PROXYCHECKioKEY != "" ? "&key=public-" . constant("PROXYCHECKioKEY") . "" : "";
+                                $pct = PROXYCHECKioKEY != "" ? "" : "Key is blank. Define PROXYCHECKioKEY in inc/config.php. Use double quotes";
+				// setup heredoc (table data)
 				$data = <<<EOD
 				<tr class="$alter">
-					<td><strong><a href="clients.php?s=$alias&amp;t=ip" title="Search for other users with this IP address">$alias</a></strong></td>
+					<td><strong><a href="clients.php?s=$ip&amp;t=ip" title="Search for other users with this IP address">$ip</a></strong></td>
                                         <td>
-                                            <a href="http://whois.domaintools.com/$ip" title="Whois IP Search" target="_blank"><img src="images/id_card.png" width="16" height="16" alt="WhoIs" /></a>
+                                            <a href="http://whois.domaintools.com/$ip" title="Whois Domain Tools.com" target="_blank"><img src="images/id_card.png" width="16" height="16" alt="WhoIs" /></a>
                                                     &nbsp;&nbsp;
-                                            <a href="https://whatismyipaddress.com/ip/$ip" title="Show Location of IP origin on map" target="_blank"><img src="images/globe.png" width="16" height="16" alt="WimIP" /></a>
+                                            <a href="https://whatismyipaddress.com/ip/$ip" title="What is my IP Address.com Map" target="_blank"><img src="images/globe.png" width="16" height="16" alt="WimIP" /></a>
                                                     &nbsp;&nbsp;
-                                            <a href="https://iplookup.flagfox.net/?ip=$ip" title="Another map" target="_blank"><img src="images/world.gif" width="16" height="16" alt="Flagfox" /></a>
+                                            <a href="https://iplookup.flagfox.net/?ip=$ip" title="Flag Fox.net" target="_blank"><img src="images/world.gif" width="16" height="16" alt="Flagfox" /></a>
                                                     &nbsp;&nbsp;
-                                            <a href="https://iphub.info/?ip=$ip" title="IP Hub" target="_blank"><img src="images/iphub.gif" width="16" height="16" alt="IPHub" /></a>
+                                            <a href="https://iphub.info/?ip=$ip" title="IP Hub.info" target="_blank"><img src="images/iphub.gif" width="16" height="16" alt="IPHub" /></a>
                                                     &nbsp;&nbsp;
-                                            <a href="https://www.abuseipdb.com/check/$ip" title="Abuse IP DB" target="_blank"><img src="images/abuseipdb.gif" width="16" height="16" alt="AbuseIPDB" /></a>
+                                            <a href="https://www.abuseipdb.com/check/$ip" title="Abuse IP DB.com" target="_blank"><img src="images/abuseipdb.gif" width="16" height="16" alt="AbuseIPDB" /></a>
                                                     &nbsp;&nbsp;
-                                            <a href="https://www.ipinfo.io/$ip" title="IP Info" target="_blank"><img src="images/ipinfo.jpg" width="16" height="16" alt="IPInfo" /></a>
+                                            <a href="https://www.ipinfo.io/$ip" title="IP Info.io" target="_blank"><img src="images/ipinfo.jpg" width="16" height="16" alt="IPInfo" /></a>
                                                     &nbsp;&nbsp;
-                                            <a href="http://getipintel.net/#web" title="Get IP Intel" target="_blank"><img src="images/getipintel.png" width="16" height="16" alt="GetIPIntel" /></a>
+                                            <a href="http://getipintel.net/#web" title="Get IP Intel.net" target="_blank"><img src="images/getipintel.png" width="16" height="16" alt="GetIPIntel" /></a>
+                                                    &nbsp;&nbsp;
+                                            <a href="https://proxycheck.io/v2/$ip?vpn=1&asn=1$pck" title="Proxy Check.io $pct" target="_blank"><img src="images/proxycheck.png" width="16" height="16" alt="ProxyCheck" /></a>
                                         </td>
                                         <td>$num_used</td>
 					<td><em>$time_add</em></td>
