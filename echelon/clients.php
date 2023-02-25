@@ -53,7 +53,7 @@ if($_GET['t']) {
 ######### QUERIES #########
 
 $query = "SELECT c.id, c.name, c.ip, c.connections, c.time_edit, c.time_add, c.group_bits, g.name as level
-			FROM clients c LEFT JOIN `groups` g
+			FROM clients c LEFT JOIN usergroups g
 			ON c.group_bits = g.id WHERE c.id != 1 ";
             
 

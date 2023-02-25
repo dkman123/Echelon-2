@@ -79,7 +79,7 @@ if($_GET['t'] == 'edituser') :
 	// setup form token
 	$ad_edit_user_token = genFormToken('adedituser');
 	
-	// get the names and id of all B3 Groups for select menu
+	// get the names and id of all B3 User Groups for select menu
 	$ech_groups = $dbl->getGroups();
 	
 	// set referance var

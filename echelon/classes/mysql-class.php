@@ -207,7 +207,7 @@ class DB_B3 {
 	} // end query()
 	
 	function getB3Groups() {
-		$query = "SELECT id, name FROM `groups` ORDER BY id ASC";
+		$query = "SELECT id, name FROM usergroups ORDER BY id ASC";
 		$stmt = $this->mysql->prepare($query);
 		$stmt->execute();
 		$stmt->bind_result($id, $name);
@@ -224,7 +224,7 @@ class DB_B3 {
 	}
 	
 	function getB3GroupsLevel() {
-		$query = "SELECT id FROM `groups` ORDER BY id ASC";
+		$query = "SELECT id FROM usergroups ORDER BY id ASC";
 		$stmt = $this->mysql->prepare($query);
 		$stmt->execute();
 		$stmt->bind_result($id);

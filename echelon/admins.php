@@ -41,7 +41,7 @@ $start_row = $page_no * $limit_rows;
 ######### QUERIES #########
 
 $query = sprintf("SELECT c.id, c.name, c.connections, c.time_edit, g.name as level
-	FROM clients c LEFT JOIN `groups` g ON c.group_bits = g.id
+	FROM clients c LEFT JOIN usergroups g ON c.group_bits = g.id
 	WHERE c.group_bits >= 8 ORDER BY %s", $orderby);
 
 ## Append this section to all queries since it is the same for all ##

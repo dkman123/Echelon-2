@@ -662,12 +662,10 @@ function linkSortClients($keyword, $title, $is_search, $search_type, $search_str
 	
 	if($is_search == false) :
 		echo'<a title="Sort information by '.$title.' ascending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=ASC"><img src="images/asc.png" width="10" height="6" alt="ASC" class="asc-img" /></a>
-			&nbsp;
-		<a title="Sort information by '.$title.' descending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=DESC"><img src="images/desc.png" width="10" height="6" alt="DESC" class="desc-img" /></a>';
+                    &nbsp;<a title="Sort information by '.$title.' descending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=DESC"><img src="images/desc.png" width="10" height="6" alt="DESC" class="desc-img" /></a>';
 	else:
 		echo'<a title="Sort information by '.$title.' ascending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=ASC&amp;s='.urlencode($search_string).'&amp;t='.$search_type.'"><img src="images/asc.png" width="10" height="6" alt="ASC" class="asc-img" /></a>
-			&nbsp;
-		<a title="Sort information by '.$title.' descending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=DESC&amp;s='.urlencode($search_string).'&amp;t='.$search_type.'"><img src="images/desc.png" width="10" height="6" alt="DESC" class="desc-img" /></a>';
+                    &nbsp;<a title="Sort information by '.$title.' descending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=DESC&amp;s='.urlencode($search_string).'&amp;t='.$search_type.'"><img src="images/desc.png" width="10" height="6" alt="DESC" class="desc-img" /></a>';
 	endif;
 
 }
