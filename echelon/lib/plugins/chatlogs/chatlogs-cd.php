@@ -14,10 +14,6 @@ $limit_rows = 100;
 $i = 0; // start counter at 0
 $total_overall_rows = 0; // set default value to 0
 
-## test
-echo "Tables: " . $tables_info . " tables_names: " . $tables_names . " $num_tables: " . $num_tables;
-
-
 ## Loop through the tables and retrieve the relevant data
 while($i < $num_tables) : // write and preform query for each server
 
