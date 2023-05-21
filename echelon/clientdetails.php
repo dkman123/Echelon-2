@@ -208,6 +208,7 @@ require 'inc/header.php';
 				<input type="hidden" name="c-ip" value="<?php echo $ip; ?>" />
 				<input type="hidden" name="c-pbid" value="<?php echo $guid; ?>" />
 				<input type="hidden" name="token" value="<?php echo $ban_token; ?>" />
+                                
 				<button class="btn btn-danger float-right my-1" type="submit" name="ban-sub" value="Ban User" title="Banhammer dat snitch">Ban User</button>
 			</form>
 		</div>       
@@ -356,7 +357,7 @@ require 'inc/header.php';
 <a class="nav-link" id="ipaliases-tab" href="#ipaliases" data-toggle="tab" role="tab" aria-controls="ipaliases" aria-selected="false"><h6 class="my-auto">IP Aliases</h6></a>
 </li>
 <?php
-	endif; // end hide is no records
+	endif; // end hide if no records
 ?>
 <li class="nav-item">
 <a class="nav-link" id="admin-tab" href="#admin" data-toggle="tab" role="tab" aria-controls="admin" aria-selected="false"><h6 class="my-auto">Admin Actions</h6></a>
@@ -373,13 +374,14 @@ require 'inc/header.php';
 <a class="nav-link" id="echelon-tab" href="#echelon" data-toggle="tab" role="tab" aria-controls="echelon" aria-selected="false"><h6 class="my-auto">Echelon Logs</h6></a>
 </li>
 <?php
-	endif; // end hide is no records
+	endif; // end hide if no records
+        
         if ($plugins != null)
-        {
-            if(!$no_plugins_active)
+        {            
+            if(!$no_plugins_active) {                
                 $plugins->displayCDFormNavTab($cid);
-            else
                 $plugins->displayCDFormNavTabLog($cid);
+            }
         }
 ?> 
 </ul>
@@ -551,7 +553,7 @@ EOD;
 </table>
 </div>
 <?php
-	endif; // end hide is no records
+	endif; // end hide if no records
 ?>
 
 <!-- Admin History -->
@@ -583,49 +585,51 @@ EOD;
 <!-- Start Client Echelon Logs -->
 
 <?php
-	## Get Echelon Logs Client Logs (NOTE INFO IN THE ECHELON DB) ##
-	$ech_logs = $dbl->getEchLogs($cid, $game);
-	
-	$count = 0;
-        if (!is_null($ech_logs)) $count = count($ech_logs);
-	if($count > 0) : // if there are records
+    ## Get Echelon Logs Client Logs (NOTE INFO IN THE ECHELON DB) ##
+    $ech_logs = $dbl->getEchLogs($cid, $game);
+
+    $count = 0;
+    if (!is_null($ech_logs)) $count = count($ech_logs);
+    if($count > 0) : // if there are records
 ?>
 <div id="echelon" class="tab-pane fade table table-hover table-responsive table-sm" role="tabpanel" aria-labelledby="echelon-tab">
-	<table id="cd-ech-table" width="100%">
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>Type</th>
-				<th>Message</th>
-				<th>Time Added</th>
-				<th>Admin</th>
-			</tr>
-		</thead>
-		<tfoot>
-			<tr><th colspan="5"></th></tr>
-		</tfoot>
-		<tbody>
-			<?php displayEchLog($ech_logs, 'client'); ?>
-		</tbody>
-	</table>  
+    <table id="cd-ech-table" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Message</th>
+                <th>Time Added</th>
+                <th>Admin</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr><th colspan="5"></th></tr>
+        </tfoot>
+        <tbody>
+            <?php displayEchLog($ech_logs, 'client'); ?>
+        </tbody>
+    </table>  
 </div>
 
 <?php
-	endif; // end hide is no records
+    endif; // end hide if no records
 ?>
 
 <?php 
-    ## Plugins Client Bio Area ##
-	if(!$no_plugins_active):  
+    ## Plugins Client XLS Stats Area ##
+    if(!$no_plugins_active):  
 ?>
 <div id="xlr" class="tab-pane fade" role="tabpanel" aria-labelledby="xlr-tab">
 <?php $plugins->displayCDBio();?>
 </div>
 <?php
-	endif; // end hide is no records
+    endif; // end hide if no records
+?>
 
-    ## Plugins Client Bio Area ##
-    if(!$no_plugins_active):  
+<?php 
+    ## Plugins Client Area ##
+    if(!$no_plugins_active):     
 ?>
 <div id="chatlog" class="tab-pane fade" role="tabpanel" aria-labelledby="chatlog-tab">
 <?php
@@ -633,7 +637,7 @@ EOD;
 $plugins->displayCDlogs($cid);?>
 </div>
 <?php
-	endif; // end hide is no records
+    endif; // end hide if no records
 ?>
 </div>
 </div>
