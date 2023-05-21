@@ -7,9 +7,14 @@ if(!empty($tables_info)) {
 } else
     $tables = array(0 => 'chatlog');
 
+if(!empty($chatoffset)) {
+    $offset = $chatoffset;
+} else
+    $offset = 0;
+
 $num_tables = count($tables); // number of tables to pull data from
 
-$limit_rows = 100;
+$limit_rows = 250;
 
 $i = 0; // start counter at 0
 $total_overall_rows = 0; // set default value to 0
@@ -26,7 +31,7 @@ while($i < $num_tables) : // write and preform query for each server
             $table_name = 'chatlog';
 
     // write query
-    $query[$i] = "SELECT id, msg_time, msg_type, msg FROM $table_name WHERE client_id = $cid ORDER BY msg_time DESC LIMIT $limit_rows";
+    $query[$i] = "SELECT id, msg_time, msg_type, msg FROM $table_name WHERE client_id = $cid ORDER BY msg_time DESC LIMIT $limit_rows OFFSET $offset";
 
     $db = DB_B3::getPointer();
 
@@ -141,4 +146,18 @@ EOD;
 echo '</div>'; // close #chat-logs 
 
 endif; // end if no records return in total
+
 ?>
+<form id="chatform" name="chatform" action="clientdetails.php" method="get">
+    <input type="hidden" id="id" name="id" value="<?php echo $cid; ?>" />
+    <input type="hidden" id="chatoffset" name="chatoffset" value="0" />
+    <script type="text/javascript">
+        function onChatButtonClick(val) {
+            document.getElementById("chatoffset").value = val;
+            document.chatform.submit();
+        }
+    </script>
+    <span class="float-left" style="text-size:small"><i>After clicking you need to click ChatLog again</i></span>
+    <button class="btn btn-primary float-right" type="button" name="chatolder" onclick="onChatButtonClick('<?php echo $offset + $limit_rows ?>')" style="margin-right: 3rem">Older</button>
+    <button class="btn btn-primary float-right" type="button" name="chatrecent" onclick="onChatButtonClick('<?php echo $offset - $limit_rows < 0 ? 0 : $offset - $limit_rows ?>')" style="margin-right: 3rem">Recent</button>
+</form>

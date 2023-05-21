@@ -147,10 +147,10 @@ class plugins {
     /**
      * For each plugin check if they want to append something to the end of the CD page
      */
-    function displayCDlogs($cid) {
+    function displayCDlogs($cid, $chatoffset) {
         foreach(self::$plugins_class as $plugin) :
             if(method_exists($plugin, 'returnClientLogs')) {
-                $content = $plugin->returnClientLogs($cid);
+                $content = $plugin->returnClientLogs($cid, $chatoffset);
                 echo $content;
             }
         endforeach;

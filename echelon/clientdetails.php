@@ -8,22 +8,25 @@ require 'inc.php';
 
 ## Do Stuff ##
 if($_GET['id'])
-	$cid = $_GET['id'];
+    $cid = $_GET['id'];
 
 if(!isID($cid)) :
-	set_error('The client id that you have supplied is invalid. Please supply a valid client id.');
-	send('clients.php');
-	exit;
+    set_error('The client id that you have supplied is invalid. Please supply a valid client id.');
+    send('clients.php');
+    exit;
 endif;
 	
 if($cid == '') {
-	set_error('No user specified, please select one');
-	send('clients.php');
+    set_error('No user specified, please select one');
+    send('clients.php');
 }
+
+if($_GET['chatoffset'])
+    $chatoffset = $_GET['chatoffset'];
 
 ## Get Client information ##
 $query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name
-		  FROM clients c LEFT JOIN usergroups g ON c.group_bits = g.id WHERE c.id = ? LIMIT 1";
+            FROM clients c LEFT JOIN usergroups g ON c.group_bits = g.id WHERE c.id = ? LIMIT 1";
 $stmt = $db->mysql->prepare($query) or die('Database Error '. $db->mysql->error);
 $stmt->bind_param('i', $cid);
 $stmt->execute();
@@ -64,70 +67,70 @@ require 'inc/header.php';
 				<td><?php echo $connections; ?></td>
 		</tr>
 		<tr>
-			<th>GUID</th>
-				<td>
-				<?php 
-					$guid_len = strlen($guid);
-					if($guid_len == 0) {
-						echo '(There is no GUID availible)';
-					
-					} elseif($mem->reqLevel('view_full_guid')) { // if allowed to see the full guid
-						if($guid_len == 32) 
-							guidCheckLink($guid);
-						else 
-							echo $guid.' <span class="red" title="This guid is only 31 characters long, it should be 32 characters!">['. $guid_len .']</span>';
-				
-					} elseif($mem->reqLevel('view_half_guid')) { // if allowed to see the last 8 chars of guid
-						
-						if($guid_len == 32) {
-							$half_guid = substr($guid, -8); // get the last 8 characters of the guid
-							guidCheckLink($half_guid);
-						} else
-							echo $guid.' <span class="red" title="This guid is only 31 characters long, it should be 32 characters!">['. $guid_len .']</span>';
-					
-					} else { // if not allowed to see any part of the guid
-						echo '(You do not have access to see the GUID)';
-					}
-				?>
-				</td>
-			<th>IP Address</th>
-				<td>
-					<?php
-					$ip = tableClean($ip);
-					if($mem->reqLevel('view_ip')) :
-						if ($ip != "") { ?>
-							<a href="clients.php?s=<?php echo $ip; ?>&amp;t=ip" title="Search for other users with this IP address"><?php echo $ip; ?></a>
-								&nbsp;&nbsp;
-							<a href="http://whois.domaintools.com/<?php echo $ip; ?>" title="Whois IP Search" target="_blank"><img src="images/id_card.png" width="16" height="16" alt="WhoIs" /></a>
-								&nbsp;&nbsp;
-							<a href="https://whatismyipaddress.com/ip/<?php echo $ip; ?>" title="Show Location of IP origin on map" target="_blank"><img src="images/globe.png" width="16" height="16" alt="WimIP" /></a>
-								&nbsp;&nbsp;
-							<a href="https://iplookup.flagfox.net/?ip=<?php echo $ip; ?>" title="Another map" target="_blank"><img src="images/world.gif" width="16" height="16" alt="Flagfox" /></a>
-								&nbsp;&nbsp;
-							<a href="https://iphub.info/?ip=<?php echo $ip; ?>" title="IP Hub" target="_blank"><img src="images/iphub.gif" width="16" height="16" alt="IPHub" /></a>
-								&nbsp;&nbsp;
-							<a href="https://www.abuseipdb.com/check/<?php echo $ip; ?>" title="Abuse IP DB" target="_blank"><img src="images/abuseipdb.gif" width="16" height="16" alt="AbuseIPDB" /></a>
-								&nbsp;&nbsp;
-							<a href="https://www.ipinfo.io/<?php echo $ip; ?>" title="IP Info" target="_blank"><img src="images/ipinfo.jpg" width="16" height="16" alt="IPInfo" /></a>
-								&nbsp;&nbsp;
-                                                        <a href="http://check.getipintel.net/check.php?ip=<?php echo $ip; ?>&contact=<?php echo $getipintel_email; ?>" title="Get IP Intel http://getipintel.net/#web" target="_blank"><img src="images/getipintel.png" width="16" height="16" alt="GetIPIntel" /></a>
-								&nbsp;&nbsp;
-                                                        <a href="https://proxycheck.io/v2/<?php echo $ip ?>?vpn=1&asn=1<?php echo (PROXYCHECKioKEY != "" ? "&key=public-" . constant("PROXYCHECKioKEY") : "") ?>" title="Proxy Check.io <?php echo (PROXYCHECKioKEY != "" ? "" : "Key is blank. Define PROXYCHECKioKEY in inc/config.php. Use double quotes") ?>" target="_blank"><img src="images/proxycheck.png" width="16" height="16" alt="ProxyCheck" /></a>
-					<?php
-						} else {
-							echo "(No IP address available)";
-						}
-					else:	
-						echo '(You do not have access to see the IP address)';
-					endif; // if current user is allowed to see the player's IP address
-					?>
-				</td>
+                    <th>GUID</th>
+                    <td>
+                    <?php 
+                        $guid_len = strlen($guid);
+                        if($guid_len == 0) {
+                            echo '(There is no GUID availible)';
+
+                        } elseif($mem->reqLevel('view_full_guid')) { // if allowed to see the full guid
+                            if($guid_len == 32) 
+                                guidCheckLink($guid);
+                            else 
+                                echo $guid.' <span class="red" title="This guid is only 31 characters long, it should be 32 characters!">['. $guid_len .']</span>';
+
+                        } elseif($mem->reqLevel('view_half_guid')) { // if allowed to see the last 8 chars of guid
+
+                            if($guid_len == 32) {
+                                $half_guid = substr($guid, -8); // get the last 8 characters of the guid
+                                guidCheckLink($half_guid);
+                            } else
+                                echo $guid.' <span class="red" title="This guid is only 31 characters long, it should be 32 characters!">['. $guid_len .']</span>';
+
+                        } else { // if not allowed to see any part of the guid
+                            echo '(You do not have access to see the GUID)';
+                        }
+                    ?>
+                    </td>
+                    <th>IP Address</th>
+                    <td>
+                        <?php
+                        $ip = tableClean($ip);
+                        if($mem->reqLevel('view_ip')) :
+                            if ($ip != "") { ?>
+                                <a href="clients.php?s=<?php echo $ip; ?>&amp;t=ip" title="Search for other users with this IP address"><?php echo $ip; ?></a>
+                                        &nbsp;&nbsp;
+                                <a href="http://whois.domaintools.com/<?php echo $ip; ?>" title="Whois IP Search" target="_blank"><img src="images/id_card.png" width="16" height="16" alt="WhoIs" /></a>
+                                        &nbsp;&nbsp;
+                                <a href="https://whatismyipaddress.com/ip/<?php echo $ip; ?>" title="Show Location of IP origin on map" target="_blank"><img src="images/globe.png" width="16" height="16" alt="WimIP" /></a>
+                                        &nbsp;&nbsp;
+                                <a href="https://iplookup.flagfox.net/?ip=<?php echo $ip; ?>" title="Another map" target="_blank"><img src="images/world.gif" width="16" height="16" alt="Flagfox" /></a>
+                                        &nbsp;&nbsp;
+                                <a href="https://iphub.info/?ip=<?php echo $ip; ?>" title="IP Hub" target="_blank"><img src="images/iphub.gif" width="16" height="16" alt="IPHub" /></a>
+                                        &nbsp;&nbsp;
+                                <a href="https://www.abuseipdb.com/check/<?php echo $ip; ?>" title="Abuse IP DB" target="_blank"><img src="images/abuseipdb.gif" width="16" height="16" alt="AbuseIPDB" /></a>
+                                        &nbsp;&nbsp;
+                                <a href="https://www.ipinfo.io/<?php echo $ip; ?>" title="IP Info" target="_blank"><img src="images/ipinfo.jpg" width="16" height="16" alt="IPInfo" /></a>
+                                        &nbsp;&nbsp;
+                                <a href="http://check.getipintel.net/check.php?ip=<?php echo $ip; ?>&contact=<?php echo $getipintel_email; ?>" title="Get IP Intel http://getipintel.net/#web" target="_blank"><img src="images/getipintel.png" width="16" height="16" alt="GetIPIntel" /></a>
+                                        &nbsp;&nbsp;
+                                <a href="https://proxycheck.io/v2/<?php echo $ip ?>?vpn=1&asn=1<?php echo (PROXYCHECKioKEY != "" ? "&key=public-" . constant("PROXYCHECKioKEY") : "") ?>" title="Proxy Check.io <?php echo (PROXYCHECKioKEY != "" ? "" : "Key is blank. Define PROXYCHECKioKEY in inc/config.php. Use double quotes") ?>" target="_blank"><img src="images/proxycheck.png" width="16" height="16" alt="ProxyCheck" /></a>
+                        <?php
+                            } else {
+                                echo "(No IP address available)";
+                            }
+                        else:	
+                            echo '(You do not have access to see the IP address)';
+                        endif; // if current user is allowed to see the player's IP address
+                        ?>
+                    </td>
 		</tr>
 		<tr>
-			<th>First Seen</th>
-				<td><?php echo date($tformat, $time_add); ?></td>
-			<th>Last Seen</th>
-				<td><?php echo date($tformat, $time_edit); ?></td>
+                    <th>First Seen</th>
+                        <td><?php echo date($tformat, $time_add); ?></td>
+                    <th>Last Seen</th>
+                        <td><?php echo date($tformat, $time_edit); ?></td>
 		</tr>
 	</tbody>
 </table>
@@ -139,15 +142,15 @@ require 'inc/header.php';
 <div class="card">
 <div class="card-header">
 <ul class="nav nav-pills nav-fill mx-2" role="tablist">
-		<?php if($mem->reqLevel('ban')) { ?><li class="nav-item"><a class="nav-link active" id="bansection-tab"" data-toggle="pill" href="#bansection" role="tab" aria-controls="bansection" aria-selected="true"><h6 class="my-auto">Ban</h6></a></li><?php } ?>
-		<?php if($mem->reqLevel('edit_client_level')) { ?><li class="nav-item"><a class="nav-link" id="setlevel-tab" data-toggle="pill" href="#setlevel" role="tab" aria-controls="setlevel" aria-selected="false"><h6 class="my-auto">Set Level</h6></a></li><?php } ?>
-		<?php if($mem->reqLevel('edit_mask')) { ?><li class="nav-item"><a class="nav-link" id="cd-act-mask-tab" data-toggle="pill" href="#cd-act-mask" role="tab" aria-controls="cd-act-mask" aria-selected="false"><h6 class="my-auto">Mask Level</h6></a></li><?php } ?>
-        <?php if($mem->reqLevel('greeting')) { ?><li class="nav-item"><a class="nav-link" id="setgreeting-tab" data-toggle="pill" href="#setgreeting" role="tab" aria-controls="setgreeting" aria-selected="false"><h6 class="my-auto">Greeting</h6></a></li><?php } ?>
-        <?php if($mem->reqLevel('comment')) { ?><li class="nav-item"><a class="nav-link" id="addcomment-tab" data-toggle="pill" href="#addcomment" role="tab" aria-controls="addcomment" aria-selected="false"><h6 class="my-auto">Comment</h6></a></li><?php } ?>
-		<?php 
-			if(!$no_plugins_active)
-				$plugins->displayCDFormTab();
-		?>
+    <?php if($mem->reqLevel('ban')) { ?><li class="nav-item"><a class="nav-link active" id="bansection-tab"" data-toggle="pill" href="#bansection" role="tab" aria-controls="bansection" aria-selected="true"><h6 class="my-auto">Ban</h6></a></li><?php } ?>
+    <?php if($mem->reqLevel('edit_client_level')) { ?><li class="nav-item"><a class="nav-link" id="setlevel-tab" data-toggle="pill" href="#setlevel" role="tab" aria-controls="setlevel" aria-selected="false"><h6 class="my-auto">Set Level</h6></a></li><?php } ?>
+    <?php if($mem->reqLevel('edit_mask')) { ?><li class="nav-item"><a class="nav-link" id="cd-act-mask-tab" data-toggle="pill" href="#cd-act-mask" role="tab" aria-controls="cd-act-mask" aria-selected="false"><h6 class="my-auto">Mask Level</h6></a></li><?php } ?>
+    <?php if($mem->reqLevel('greeting')) { ?><li class="nav-item"><a class="nav-link" id="setgreeting-tab" data-toggle="pill" href="#setgreeting" role="tab" aria-controls="setgreeting" aria-selected="false"><h6 class="my-auto">Greeting</h6></a></li><?php } ?>
+    <?php if($mem->reqLevel('comment')) { ?><li class="nav-item"><a class="nav-link" id="addcomment-tab" data-toggle="pill" href="#addcomment" role="tab" aria-controls="addcomment" aria-selected="false"><h6 class="my-auto">Comment</h6></a></li><?php } ?>
+    <?php 
+        if(!$no_plugins_active)
+            $plugins->displayCDFormTab();
+    ?>
 </ul>
 </div>
 <div class="card-body row">
@@ -157,31 +160,32 @@ require 'inc/header.php';
         <?php
         if($mem->reqLevel('ban')) :
         $ban_token = genFormToken('ban');
-		?>
+        ?>
+            
         <div class="tab-pane fade show active" id="bansection" role="tabpanel" aria-labelledby="bansection-tab">
-		<div class="col justify-center"> 
-			<form action="actions/b3/ban.php" method="post">
+            <div class="col justify-center"> 
+                <form action="actions/b3/ban.php" method="post">
                 <?php
                 if($mem->reqLevel('permban')) :
                 ?>
                 <div class="form-row my-1">                                
-                            <label class="col-sm-4" for="pb">Permanent Ban?</label>                    
-                            <div class="col">
-                                <label class="my-1 switch">
-                                    <input type="checkbox" name="pb" id="pb"> 
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
+                    <label class="col-sm-4" for="pb">Permanent Ban?</label>                    
+                    <div class="col">
+                        <label class="my-1 switch">
+                            <input type="checkbox" name="pb" id="pb"> 
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
                 </div>
                 <?php
                     endif; // end hide ban section to non authed
                 ?>
                 
                 <div class="form-row" id="ban-duration">
-                <label class="col-form-label col-sm-4" for="duration">Duration</label>
-                            
-                <div class="col-md-4" id="ban-duration">
-                    <div class="input-group">
+                    <label class="col-form-label col-sm-4" for="duration">Duration</label>
+
+                    <div class="col-md-4" id="ban-duration">
+                        <div class="input-group">
                             <input class="form-control int dur" type="number" name="duration" id="duration" min="0" step="1" data-bind="value:replyNumber">	
                             <select class="custom-select form-control" name="time">
                                 <option value="m">Minutes</option>
@@ -191,69 +195,67 @@ require 'inc/header.php';
                                 <option value="mn">Months</option>
                                 <option value="y">Years</option>
                             </select>               
+                        </div>
                     </div>
-      
                 </div>
-                </div>
-                   
                     
-				<div class="form-row my-1">
+                <div class="form-row my-1">
                     <label class="col-form-label col-sm-4" for="reason">Reason</label>
                     <div class="col-md-4">
                         <input class="form-control" type="text" name="reason" id="reason">
-                        </div>
+                    </div>
                 </div>
-				<input type="hidden" name="cid" value="<?php echo $cid; ?>" />
-				<input type="hidden" name="c-name" value="<?php echo $name; ?>" />
-				<input type="hidden" name="c-ip" value="<?php echo $ip; ?>" />
-				<input type="hidden" name="c-pbid" value="<?php echo $guid; ?>" />
-				<input type="hidden" name="token" value="<?php echo $ban_token; ?>" />
-                                
-				<button class="btn btn-danger float-right my-1" type="submit" name="ban-sub" value="Ban User" title="Banhammer dat snitch">Ban User</button>
-			</form>
-		</div>       
+                    <input type="hidden" name="cid" value="<?php echo $cid; ?>" />
+                    <input type="hidden" name="c-name" value="<?php echo $name; ?>" />
+                    <input type="hidden" name="c-ip" value="<?php echo $ip; ?>" />
+                    <input type="hidden" name="c-pbid" value="<?php echo $guid; ?>" />
+                    <input type="hidden" name="token" value="<?php echo $ban_token; ?>" />
+
+                    <button class="btn btn-danger float-right my-1" type="submit" name="ban-sub" value="Ban User" title="Banhammer dat snitch">Ban User</button>
+                </form>
+            </div>       
         </div><!-- Ban Section -->
-		<?php
+            <?php
             endif; // end hide ban section to non authed
             $b3_groups = $db->getB3Groups();
             
             if($mem->reqLevel('edit_client_level')) :
-			$level_token = genFormToken('level');
-		?>
+                $level_token = genFormToken('level');
+            ?>
         <div class="tab-pane fade" id="setlevel" role="tabpanel" aria-labelledby="setlevel-tab">
         <div class="col justify-center">
-			<form action="actions/b3/level.php" method="post">
+            <form action="actions/b3/level.php" method="post">
             <div class="form-row">
-				<label class="col-sm-4 col-form-label" for="level">Level</label>
+                <label class="col-sm-4 col-form-label" for="level">Level</label>
                 <div class="col-md-4">
-					<select class="form-control" name="level" id="level">
-						<?php
-							foreach($b3_groups as $group) :
-								$gid = $group['id'];
-								$gname = $group['name'];
-								if($group_bits == $gid)
-									echo '<option value="'.$gid.'" selected="selected">'.$gname.'</option>';
-								else
-									echo '<option value="'.$gid.'">'.$gname.'</option>';
-							endforeach;
-						?>
-					</select>
-                    </div>
+                    <select class="form-control" name="level" id="level">
+                        <?php
+                            foreach($b3_groups as $group) :
+                                $gid = $group['id'];
+                                $gname = $group['name'];
+                                if($group_bits == $gid)
+                                    echo '<option value="'.$gid.'" selected="selected">'.$gname.'</option>';
+                                else
+                                    echo '<option value="'.$gid.'">'.$gname.'</option>';
+                            endforeach;
+                        ?>
+                    </select>
+                </div>
+            </div>
+					
+                <div class="form-row my-1" id="level-pw">
+                    <label class="col-sm-4 col-form-label" for="password">Verify yourself</label>
+                    <div class="col-md-4">
+                        <input class="form-control" type="password" name="password" id="password">
+                        </div>
                 </div>
 					
-				<div class="form-row my-1" id="level-pw">
-					<label class="col-sm-4 col-form-label" for="password">Verify yourself</label>
-                    <div class="col-md-4">
-						<input class="form-control" type="password" name="password" id="password">
-						</div>
-				</div>
-					
-				<input type="hidden" name="old-level" value="<?php echo $group_bits; ?>" />
-				<input type="hidden" name="cid" value="<?php echo $cid; ?>" />
-				<input type="hidden" name="token" value="<?php echo $level_token; ?>" />
-				<button class="btn btn-primary float-right" type="submit" name="level-sub" value="Change Level">Set Level</button>
-			</form>
-		</div>
+                <input type="hidden" name="old-level" value="<?php echo $group_bits; ?>" />
+                <input type="hidden" name="cid" value="<?php echo $cid; ?>" />
+                <input type="hidden" name="token" value="<?php echo $level_token; ?>" />
+                <button class="btn btn-primary float-right" type="submit" name="level-sub" value="Change Level">Set Level</button>
+            </form>
+            </div>
         </div>
 		<?php
 			endif; // end if 
@@ -634,7 +636,7 @@ EOD;
 <div id="chatlog" class="tab-pane fade" role="tabpanel" aria-labelledby="chatlog-tab">
 <?php
 ## Plugins Log Include Area ##
-$plugins->displayCDlogs($cid);?>
+$plugins->displayCDlogs($cid, $chatoffset);?>
 </div>
 <?php
     endif; // end hide if no records

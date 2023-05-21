@@ -104,8 +104,9 @@ class chatlogs extends plugins {
      * Returns a list of chatlogs of the client
      *
      * @param int $cid - the client id of the user that we need the logs for
+     * @param int @chatoffset - the paging offset, 0 on first visit
      */
-    public function returnClientLogs($cid) {
+    public function returnClientLogs($cid, $chatoffset) {
         $tables_info = $this->getTables(); // get the table information for the chatlogs queries
         $tables_names = $this->getTablesNames();
 
@@ -168,7 +169,7 @@ class chatlogs extends plugins {
     } // edn pageLogic
 
     /**
-     * Return the fully formated page content for this plugin
+     * Return the fully formatted page content for this plugin
      */
     public function returnPage($table_num) {
 
