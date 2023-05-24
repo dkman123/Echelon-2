@@ -139,7 +139,7 @@ class chatlogs extends plugins {
      *
      * @param string $table_name - name of the table to get records from (default to chatlog, plugin default)
      */
-    private function pageLogic($table_num) {
+    private function pageLogic($table_num, $chatlimit, $chatoffset) {
 
         if(empty($table_num)) {
             $table_name = 'chatlog';
@@ -157,7 +157,7 @@ class chatlogs extends plugins {
         $db = DB_B3::getPointer(); // get the db pointer
 
         $query = "SELECT id, msg_time, msg_type, client_id, client_name, client_team, msg 
-                    FROM ". $table_name ." ORDER BY msg_time DESC LIMIT 250";
+                    FROM ". $table_name ." ORDER BY msg_time DESC LIMIT " . $chatlimit . " OFFSET " . $chatoffset;
 
         $results = $db->query($query); // run the query
 
@@ -176,7 +176,17 @@ class chatlogs extends plugins {
         global $mem;
         global $config; // get the config servers data
 
-        $logic = $this->pageLogic($table_num);
+        if(isset($_GET['chatlimit']))
+            $chatlimit = $_GET['chatlimit'];
+        else
+            $chatlimit = 250;
+
+        if(isset($_GET['chatoffset']))
+            $chatoffset = $_GET['chatoffset'];
+        else
+            $chatoffset = 0;
+
+        $logic = $this->pageLogic($table_num, $chatlimit, $chatoffset);
 
         if($logic == false)
                 set_error('The chatlogs table you asked for does not exist, please select a real table.');
@@ -308,7 +318,17 @@ class chatlogs extends plugins {
 
             $content .= $this->buildLines($logic['data']);
   
-            $content .= '</tbody></table><a href="#">Go to top</a></div></div>';
+            $content .= '</tbody></table>';
+            $content .= '<form id="chatform" name="chatform" action="plugin.php" method="get">';
+            
+            $content .= '<input type="hidden" id="pl" name="pl" value="chatlogs" />';
+            $content .= '<input type="hidden" id="chatoffset" name="chatoffset" value="0" />';
+            $content .= '<input type="hidden" id="chatlimit" name="chatlimit" value="' . $chatlimit . '" />';
+            $content .= '<script type="text/javascript"> function onChatButtonClick(start, limit) { document.getElementById("chatoffset").value = start; if (limit != "0") { document.getElementById("chatlimit").value = limit; } document.chatform.submit(); } </script>';
+            $content .= '<button class="btn btn-primary float-right" type="button" name="chatolder" onclick="onChatButtonClick(\'' . ($chatoffset + $chatlimit) . '\', \'0\')" style="margin-right: 3rem">Older</button>';
+            $content .= '<button class="btn btn-primary float-right" type="button" name="chatrecent" onclick="onChatButtonClick(\'' . ($chatoffset - $chatlimit < 0 ? 0 : $chatoffset - $chatlimit) . '\', \'0\')" style="margin-right: 3rem">Recent</button>';
+
+            $content .= '</form><a href="#">Go to top</a></div></div>';
 
             else:
                 $content .= 'There are no chatlog records in the selected table.';
