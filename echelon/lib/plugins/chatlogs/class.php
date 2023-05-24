@@ -23,7 +23,7 @@ class chatlogs extends plugins {
      *	You may edit below here
      */
 
-    // Next two vars need to have the same number of items, they should be in the same order aswell
+    // Next two vars need to have the same number of items, they should be in the same order as well
     private $tables = 'chatlog';
     private $tables_names = 'Server 1';
 
@@ -157,7 +157,7 @@ class chatlogs extends plugins {
         $db = DB_B3::getPointer(); // get the db pointer
 
         $query = "SELECT id, msg_time, msg_type, client_id, client_name, client_team, msg 
-                    FROM ". $table_name ." ORDER BY msg_time DESC LIMIT 100";
+                    FROM ". $table_name ." ORDER BY msg_time DESC LIMIT 250";
 
         $results = $db->query($query); // run the query
 
@@ -169,7 +169,7 @@ class chatlogs extends plugins {
     } // edn pageLogic
 
     /**
-     * Return the fully formatted page content for this plugin
+     * Return the fully formatted page content for this plugin (Other - Chat logs)
      */
     public function returnPage($table_num) {
 
@@ -307,8 +307,8 @@ class chatlogs extends plugins {
                         <tbody id="chatlog-body">';
 
             $content .= $this->buildLines($logic['data']);
-
-            $content .= '</tbody></table></div></div>';
+  
+            $content .= '</tbody></table><a href="#">Go to top</a></div></div>';
 
             else:
                 $content .= 'There are no chatlog records in the selected table.';
@@ -332,33 +332,33 @@ class chatlogs extends plugins {
 
         if(count($data_set) > 0) :
 
-        foreach($data_set as $data):
-            $id = $data['id'];
-            $msg_type = $data['msg_type'];
-            $msg = cleanvar(removeColorCode($data['msg']));
-            $client_link = clientLink($data['client_name'], $data['client_id']);
-            $time_read = date($tformat, $data['msg_time']);
+            foreach($data_set as $data):
+                $id = $data['id'];
+                $msg_type = $data['msg_type'];
+                $msg = cleanvar(removeColorCode($data['msg']));
+                $client_link = clientLink($data['client_name'], $data['client_id']);
+                $time_read = date($tformat, $data['msg_time']);
 
-            ## Highlight Commands ##
-            if (substr($msg, 0,1) == '!' or substr($msg, 0,1) == '@')
-                $msg = '<span class="chat-cmd">'. $msg ."</span>"; 
+                ## Highlight Commands ##
+                if (substr($msg, 0,1) == '!' or substr($msg, 0,1) == '@')
+                    $msg = '<span class="chat-cmd">'. $msg ."</span>"; 
 
-            $alter = alter();
+                $alter = alter();
 
-            // setup heredoc (table data)			
-            $data = <<<EOD
-            <tr class="$alter $ani" id="$id">
-                <td>$id</td>
-                <td><strong>$client_link</strong></td>
-                <td>$msg_type</td>
-                <td>$msg</td>
-                <td><em>$time_read</em></td>
-            </tr>
+                // setup heredoc (table data)			
+                $data = <<<EOD
+                <tr class="$alter $ani" id="$id">
+                    <td>$id</td>
+                    <td><strong>$client_link</strong></td>
+                    <td>$msg_type</td>
+                    <td>$msg</td>
+                    <td><em>$time_read</em></td>
+                </tr>
 EOD;
 
-            $content .= $data;
+                $content .= $data;
 
-        endforeach;
+            endforeach;
 
         endif;
 

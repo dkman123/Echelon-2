@@ -12,9 +12,12 @@ if(!empty($chatoffset)) {
 } else
     $offset = 0;
 
-$num_tables = count($tables); // number of tables to pull data from
+if(!empty($chatlimit)) {
+    $limit_rows = $chatlimit;
+} else
+    $limit_rows = 250;
 
-$limit_rows = 250;
+$num_tables = count($tables); // number of tables to pull data from
 
 $i = 0; // start counter at 0
 $total_overall_rows = 0; // set default value to 0
@@ -151,13 +154,19 @@ endif; // end if no records return in total
 <form id="chatform" name="chatform" action="clientdetails.php" method="get">
     <input type="hidden" id="id" name="id" value="<?php echo $cid; ?>" />
     <input type="hidden" id="chatoffset" name="chatoffset" value="0" />
+    <input type="hidden" id="chatlimit" name="chatlimit" value="<?php echo $limit_rows ?>" />
     <script type="text/javascript">
-        function onChatButtonClick(val) {
-            document.getElementById("chatoffset").value = val;
+        function onChatButtonClick(start, limit) {
+            document.getElementById("chatoffset").value = start;
+            if (limit != '0') {
+                document.getElementById("chatlimit").value = limit;
+            }
             document.chatform.submit();
         }
     </script>
-    <span class="float-left" style="text-size:small"><i>After clicking you need to click ChatLog again</i></span>
-    <button class="btn btn-primary float-right" type="button" name="chatolder" onclick="onChatButtonClick('<?php echo $offset + $limit_rows ?>')" style="margin-right: 3rem">Older</button>
-    <button class="btn btn-primary float-right" type="button" name="chatrecent" onclick="onChatButtonClick('<?php echo $offset - $limit_rows < 0 ? 0 : $offset - $limit_rows ?>')" style="margin-right: 3rem">Recent</button>
+    <a href="#">Go to top</a>
+    <button class="btn btn-primary float-left" type="button" name="chatall" onclick="onChatButtonClick('0','5000')" style="margin-right: 3rem">All</button>
+    <button class="btn btn-primary float-right" type="button" name="chatolder" onclick="onChatButtonClick('<?php echo $offset + $limit_rows ?>'), '0'" style="margin-right: 3rem">Older</button>
+    <button class="btn btn-primary float-right" type="button" name="chatrecent" onclick="onChatButtonClick('<?php echo $offset - $limit_rows < 0 ? 0 : $offset - $limit_rows ?>', '0')" style="margin-right: 3rem">Recent</button>
+    <br /><span class="float-left" style="text-size:small"><i>After clicking you need to click ChatLog again</i></span>
 </form>
