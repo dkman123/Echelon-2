@@ -21,8 +21,15 @@ if($cid == '') {
     send('clients.php');
 }
 
-if($_GET['chatoffset'])
+if($_GET['chatoffset'] && is_numeric($_GET['chatoffset']))
     $chatoffset = $_GET['chatoffset'];
+else
+    $chatoffset = 0;
+
+if($_GET['chatlimit'] && is_numeric($_GET['chatlimit']))
+    $chatlimit = $_GET['chatlimit'];
+else
+    $chatlimit = 250;
 
 ## Get Client information ##
 $query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name
@@ -636,7 +643,7 @@ EOD;
 <div id="chatlog" class="tab-pane fade" role="tabpanel" aria-labelledby="chatlog-tab">
 <?php
 ## Plugins Log Include Area ##
-$plugins->displayCDlogs($cid, $chatoffset);?>
+$plugins->displayCDlogs($cid, $chatoffset, $chatlimit);?>
 </div>
 <?php
     endif; // end hide if no records

@@ -106,7 +106,7 @@ class chatlogs extends plugins {
      * @param int $cid - the client id of the user that we need the logs for
      * @param int @chatoffset - the paging offset, 0 on first visit
      */
-    public function returnClientLogs($cid, $chatoffset) {
+    public function returnClientLogs($cid, $chatoffset, $chatlimit) {
         $tables_info = $this->getTables(); // get the table information for the chatlogs queries
         $tables_names = $this->getTablesNames();
 
