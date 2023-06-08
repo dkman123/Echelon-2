@@ -32,12 +32,12 @@ else
     $chatlimit = 250;
 
 ## Get Client information ##
-$query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name
+$query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name, c.app
             FROM clients c LEFT JOIN usergroups g ON c.group_bits = g.id WHERE c.id = ? LIMIT 1";
 $stmt = $db->mysql->prepare($query) or die('Database Error '. $db->mysql->error);
 $stmt->bind_param('i', $cid);
 $stmt->execute();
-$stmt->bind_result($ip, $connections, $guid, $name, $mask_level, $greeting, $time_add, $time_edit, $group_bits, $user_group);
+$stmt->bind_result($ip, $connections, $guid, $name, $mask_level, $greeting, $time_add, $time_edit, $group_bits, $user_group, $app);
 $stmt->fetch();
 $stmt->close();
 
@@ -59,7 +59,7 @@ require 'inc/header.php';
 			<th>Name</th>
 				<td><?php echo  tableClean($name); ?></td>
 			<th>@ID</th>
-				<td><?php echo $cid; ?></td>
+            <td><?php echo $cid; ?> <span style="float: right">Last App: <?php echo $app; ?></span></td>
 		</tr>
 		<tr>
 			<th>Level</th>
