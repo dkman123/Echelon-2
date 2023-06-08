@@ -18,43 +18,43 @@ $is_search = false;
 
 ## Sorts requests vars ##
 if($_GET['ob'])
-	$orderby = addslashes($_GET['ob']);
+    $orderby = addslashes($_GET['ob']);
 
 if($_GET['o'])
-	$order = addslashes($_GET['o']);
+    $order = addslashes($_GET['o']);
 
 // allowed things to sort by
-$allowed_orderby = array('id', 'name', 'ip', 'connections', 'group_bits', 'time_add', 'time_edit');
+$allowed_orderby = array('id', 'name', 'ip', 'connections', 'group_bits', 'time_add', 'time_edit', 'app');
 // Check if the sent varible is in the allowed array 
 if(!in_array($orderby, $allowed_orderby))
-	$orderby = 'id'; // if not just set to default id
+    $orderby = 'id'; // if not just set to default id
 
 ## Page Vars ##
 if ($_GET['p'])
-  $page_no = addslashes($_GET['p']);
+    $page_no = addslashes($_GET['p']);
 
 $start_row = $page_no * $limit_rows;
 
 ## Search Request handling ##
 if($_GET['s']) {
-	$search_string = addslashes($_GET['s']);
-	$is_search = true; // this is then a search page
+    $search_string = addslashes($_GET['s']);
+    $is_search = true; // this is then a search page
 }
 
 if($_GET['t']) {
-	$search_type = $_GET['t']; //  no need to escape it will be checked off whitelist
-	$allowed_search_type = array('all', 'alias', 'pbid', 'ip', 'id', 'aliastable', 'ipaliastable');
-	if(!in_array($search_type, $allowed_search_type))
-		$search_type = 'all'; // if not just set to default all
+    $search_type = $_GET['t']; //  no need to escape it will be checked off whitelist
+    $allowed_search_type = array('all', 'alias', 'pbid', 'ip', 'id', 'aliastable', 'ipaliastable');
+    if(!in_array($search_type, $allowed_search_type))
+        $search_type = 'all'; // if not just set to default all
 }
 
 
 ###########################
 ######### QUERIES #########
 
-$query = "SELECT c.id, c.name, c.ip, c.connections, c.time_edit, c.time_add, c.group_bits, g.name as level
-			FROM clients c LEFT JOIN usergroups g
-			ON c.group_bits = g.id WHERE c.id != 1 ";
+$query = "SELECT c.id, c.name, c.ip, c.connections, c.time_edit, c.time_add, c.group_bits, g.name as level, c.app
+    FROM clients c LEFT JOIN usergroups g
+    ON c.group_bits = g.id WHERE c.id != 1 ";
             
 
 if($is_search == true) : // IF SEARCH
@@ -147,6 +147,9 @@ if(!$db->error) :
 			<th>Last Seen
 				<?php linkSortClients('time_edit', 'Last Seen', $is_search, $search_type, $search_string); ?>
 			</th>
+			<th>App
+				<?php linkSortClients('app', 'App', $is_search, $search_type, $search_string); ?>
+			</th>
 		</tr>
 	</thead>
 	<tfoot>
@@ -166,6 +169,7 @@ if(!$db->error) :
 			$connections = $client['connections'];
 			$time_edit = $client['time_edit'];
 			$time_add = $client['time_add'];
+			$app = $client['app'];
 			
 			$time_add = date($tformat, $time_add);
 			$time_edit = date($tformat, $time_edit);
@@ -173,8 +177,8 @@ if(!$db->error) :
 			$alter = alter();
 				
 			$clientLink = clientLink($name, $cid);
-                        $cidLink = cidLink($name, $cid);
-                        $ipintelLink = ipintelLink($ip, $getipintel_email);
+            $cidLink = cidLink($name, $cid);
+            $ipintelLink = ipintelLink($ip, $getipintel_email);
 			
 			
 			// setup heredoc (table data)			
@@ -182,13 +186,14 @@ if(!$db->error) :
 			<tr class="$alter">
 				<td><strong>$clientLink</strong></td>
 				<td style="white-space: nowrap">$ipintelLink
-                                    &nbsp;$ip
-                                    </td>
+                    &nbsp;$ip
+                    </td>
 				<td>@$cidLink</td>
 				<td>$level</td>
 				<td>$connections</td>
 				<td><em>$time_add</em></td>
 				<td><em>$time_edit</em></td>
+				<td>$app</td>
 			</tr>
 EOD;
 
