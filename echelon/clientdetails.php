@@ -37,7 +37,7 @@ $query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, 
 $stmt = $db->mysql->prepare($query) or die('Database Error '. $db->mysql->error);
 $stmt->bind_param('i', $cid);
 $stmt->execute();
-$stmt->bind_result($ip, $connections, $guid, $name, $mask_level, $greeting, $time_add, $time_edit, $group_bits, $user_group, $app);
+$stmt->bind_result($ip, $connections, $guid, $name, $mask_level, $greeting, $time_add, $time_edit, $group_bits, $user_group, $app, $isocode);
 $stmt->fetch();
 $stmt->close();
 
