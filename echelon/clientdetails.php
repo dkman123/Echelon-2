@@ -32,7 +32,7 @@ else
     $chatlimit = 250;
 
 ## Get Client information ##
-$query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name, c.app
+$query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name, c.app, c.isocode
             FROM clients c LEFT JOIN usergroups g ON c.group_bits = g.id WHERE c.id = ? LIMIT 1";
 $stmt = $db->mysql->prepare($query) or die('Database Error '. $db->mysql->error);
 $stmt->bind_param('i', $cid);
