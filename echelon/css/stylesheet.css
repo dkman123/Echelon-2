@@ -114,3 +114,9 @@ input:checked+.slider:before{
     word-break: break-all;
     white-space: normal;
 }
+
+@media (min-width: 1200px) {
+    .container-wide {
+      max-width: 1640px;
+    }
+}

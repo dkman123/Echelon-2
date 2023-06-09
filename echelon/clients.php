@@ -52,7 +52,7 @@ if($_GET['t']) {
 ###########################
 ######### QUERIES #########
 
-$query = "SELECT c.id, c.name, c.ip, c.connections, c.time_edit, c.time_add, c.group_bits, g.name as level, c.app
+$query = "SELECT c.id, c.name, c.ip, c.connections, c.time_edit, c.time_add, c.group_bits, g.name as level, c.app, c.isocode
     FROM clients c LEFT JOIN usergroups g
     ON c.group_bits = g.id WHERE c.id != 1 ";
             
@@ -99,7 +99,7 @@ require 'inc/header.php';
 if(!$db->error) :
 ?>
 
-<div class="container my-2">
+<div class="container my-2 container-wide">
 <div class="card">
 <div class="card-header">
     <h5 class="my-auto">Client Listings
@@ -132,13 +132,13 @@ if(!$db->error) :
 			<th>Last IP
 				<?php linkSortClients('ip', 'Last IP', $is_search, $search_type, $search_string); ?>
 			</th>
-			<th>Cli-ID
+			<th>Cli-ID<br />
 				<?php linkSortClients('id', 'Cli-ID', $is_search, $search_type, $search_string); ?>
 			</th>
-			<th>Level
+			<th>Level<br />
 				<?php linkSortClients('group_bits', 'Level', $is_search, $search_type, $search_string); ?>
 			</th>
-			<th>Conns
+			<th>Conns<br />
 				<?php linkSortClients('connections', 'Connections', $is_search, $search_type, $search_string); ?>
 			</th>
 			<th>First Seen
@@ -147,8 +147,10 @@ if(!$db->error) :
 			<th>Last Seen
 				<?php linkSortClients('time_edit', 'Last Seen', $is_search, $search_type, $search_string); ?>
 			</th>
-			<th>App
+			<th>App<br />
 				<?php linkSortClients('app', 'App', $is_search, $search_type, $search_string); ?>
+			</th>
+			<th>CC
 			</th>
 		</tr>
 	</thead>
@@ -170,6 +172,7 @@ if(!$db->error) :
 			$time_edit = $client['time_edit'];
 			$time_add = $client['time_add'];
 			$app = $client['app'];
+			$isocode = $client['isocode'];
 			
 			$time_add = date($tformat, $time_add);
 			$time_edit = date($tformat, $time_edit);
@@ -194,6 +197,7 @@ if(!$db->error) :
 				<td><em>$time_add</em></td>
 				<td><em>$time_edit</em></td>
 				<td>$app</td>
+				<td>$isocode</td>
 			</tr>
 EOD;
 

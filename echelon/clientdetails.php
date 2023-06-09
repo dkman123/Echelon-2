@@ -57,87 +57,93 @@ require 'inc/header.php';
 	<tbody>
 		<tr>
 			<th>Name</th>
-				<td><?php echo  tableClean($name); ?></td>
+            <td><?php echo  tableClean($name); ?></td>
 			<th>@ID</th>
-            <td><?php echo $cid; ?> <span style="float: right">Last App: <?php echo $app; ?></span></td>
+            <td><?php echo $cid; ?></td>
 		</tr>
 		<tr>
 			<th>Level</th>
-				<td><?php 
-					if($user_group == NULL)
-						echo 'Un-registered';
-					else
-						echo $user_group; 
-					?>
-				</td>
+            <td><?php 
+                if($user_group == NULL)
+                    echo 'Un-registered';
+                else
+                    echo $user_group; 
+                ?>
+            </td>
 			<th>Connections</th>
-				<td><?php echo $connections; ?></td>
+            <td><?php echo $connections; ?></td>
 		</tr>
 		<tr>
-                    <th>GUID</th>
-                    <td>
-                    <?php 
-                        $guid_len = strlen($guid);
-                        if($guid_len == 0) {
-                            echo '(There is no GUID availible)';
+            <th>GUID</th>
+            <td>
+            <?php 
+                $guid_len = strlen($guid);
+                if($guid_len == 0) {
+                    echo '(There is no GUID availible)';
 
-                        } elseif($mem->reqLevel('view_full_guid')) { // if allowed to see the full guid
-                            if($guid_len == 32) 
-                                guidCheckLink($guid);
-                            else 
-                                echo $guid.' <span class="red" title="This guid is only 31 characters long, it should be 32 characters!">['. $guid_len .']</span>';
+                } elseif($mem->reqLevel('view_full_guid')) { // if allowed to see the full guid
+                    if($guid_len == 32) 
+                        guidCheckLink($guid);
+                    else 
+                        echo $guid.' <span class="red" title="This guid is only 31 characters long, it should be 32 characters!">['. $guid_len .']</span>';
 
-                        } elseif($mem->reqLevel('view_half_guid')) { // if allowed to see the last 8 chars of guid
+                } elseif($mem->reqLevel('view_half_guid')) { // if allowed to see the last 8 chars of guid
 
-                            if($guid_len == 32) {
-                                $half_guid = substr($guid, -8); // get the last 8 characters of the guid
-                                guidCheckLink($half_guid);
-                            } else
-                                echo $guid.' <span class="red" title="This guid is only 31 characters long, it should be 32 characters!">['. $guid_len .']</span>';
+                    if($guid_len == 32) {
+                        $half_guid = substr($guid, -8); // get the last 8 characters of the guid
+                        guidCheckLink($half_guid);
+                    } else
+                        echo $guid.' <span class="red" title="This guid is only 31 characters long, it should be 32 characters!">['. $guid_len .']</span>';
 
-                        } else { // if not allowed to see any part of the guid
-                            echo '(You do not have access to see the GUID)';
-                        }
-                    ?>
-                    </td>
-                    <th>IP Address</th>
-                    <td>
-                        <?php
-                        $ip = tableClean($ip);
-                        if($mem->reqLevel('view_ip')) :
-                            if ($ip != "") { ?>
-                                <a href="clients.php?s=<?php echo $ip; ?>&amp;t=ip" title="Search for other users with this IP address"><?php echo $ip; ?></a>
-                                        &nbsp;&nbsp;
-                                <a href="http://whois.domaintools.com/<?php echo $ip; ?>" title="Whois IP Search" target="_blank"><img src="images/id_card.png" width="16" height="16" alt="WhoIs" /></a>
-                                        &nbsp;&nbsp;
-                                <a href="https://whatismyipaddress.com/ip/<?php echo $ip; ?>" title="Show Location of IP origin on map" target="_blank"><img src="images/globe.png" width="16" height="16" alt="WimIP" /></a>
-                                        &nbsp;&nbsp;
-                                <a href="https://iplookup.flagfox.net/?ip=<?php echo $ip; ?>" title="Another map" target="_blank"><img src="images/world.gif" width="16" height="16" alt="Flagfox" /></a>
-                                        &nbsp;&nbsp;
-                                <a href="https://iphub.info/?ip=<?php echo $ip; ?>" title="IP Hub" target="_blank"><img src="images/iphub.gif" width="16" height="16" alt="IPHub" /></a>
-                                        &nbsp;&nbsp;
-                                <a href="https://www.abuseipdb.com/check/<?php echo $ip; ?>" title="Abuse IP DB" target="_blank"><img src="images/abuseipdb.gif" width="16" height="16" alt="AbuseIPDB" /></a>
-                                        &nbsp;&nbsp;
-                                <a href="https://www.ipinfo.io/<?php echo $ip; ?>" title="IP Info" target="_blank"><img src="images/ipinfo.jpg" width="16" height="16" alt="IPInfo" /></a>
-                                        &nbsp;&nbsp;
-                                <a href="http://check.getipintel.net/check.php?ip=<?php echo $ip; ?>&contact=<?php echo $getipintel_email; ?>" title="Get IP Intel http://getipintel.net/#web" target="_blank"><img src="images/getipintel.png" width="16" height="16" alt="GetIPIntel" /></a>
-                                        &nbsp;&nbsp;
-                                <a href="https://proxycheck.io/v2/<?php echo $ip ?>?vpn=1&asn=1<?php echo (PROXYCHECKioKEY != "" ? "&key=public-" . constant("PROXYCHECKioKEY") : "") ?>" title="Proxy Check.io <?php echo (PROXYCHECKioKEY != "" ? "" : "Key is blank. Define PROXYCHECKioKEY in inc/config.php. Use double quotes") ?>" target="_blank"><img src="images/proxycheck.png" width="16" height="16" alt="ProxyCheck" /></a>
-                        <?php
-                            } else {
-                                echo "(No IP address available)";
-                            }
-                        else:	
-                            echo '(You do not have access to see the IP address)';
-                        endif; // if current user is allowed to see the player's IP address
-                        ?>
-                    </td>
+                } else { // if not allowed to see any part of the guid
+                    echo '(You do not have access to see the GUID)';
+                }
+            ?>
+            </td>
+            <th>IP Address</th>
+            <td>
+                <?php
+                $ip = tableClean($ip);
+                if($mem->reqLevel('view_ip')) :
+                    if ($ip != "") { ?>
+                        <a href="clients.php?s=<?php echo $ip; ?>&amp;t=ip" title="Search for other users with this IP address"><?php echo $ip; ?></a>
+                                &nbsp;&nbsp;
+                        <a href="http://whois.domaintools.com/<?php echo $ip; ?>" title="Whois IP Search" target="_blank"><img src="images/id_card.png" width="16" height="16" alt="WhoIs" /></a>
+                                &nbsp;&nbsp;
+                        <a href="https://whatismyipaddress.com/ip/<?php echo $ip; ?>" title="Show Location of IP origin on map" target="_blank"><img src="images/globe.png" width="16" height="16" alt="WimIP" /></a>
+                                &nbsp;&nbsp;
+                        <a href="https://iplookup.flagfox.net/?ip=<?php echo $ip; ?>" title="Another map" target="_blank"><img src="images/world.gif" width="16" height="16" alt="Flagfox" /></a>
+                                &nbsp;&nbsp;
+                        <a href="https://iphub.info/?ip=<?php echo $ip; ?>" title="IP Hub" target="_blank"><img src="images/iphub.gif" width="16" height="16" alt="IPHub" /></a>
+                                &nbsp;&nbsp;
+                        <a href="https://www.abuseipdb.com/check/<?php echo $ip; ?>" title="Abuse IP DB" target="_blank"><img src="images/abuseipdb.gif" width="16" height="16" alt="AbuseIPDB" /></a>
+                                &nbsp;&nbsp;
+                        <a href="https://www.ipinfo.io/<?php echo $ip; ?>" title="IP Info" target="_blank"><img src="images/ipinfo.jpg" width="16" height="16" alt="IPInfo" /></a>
+                                &nbsp;&nbsp;
+                        <a href="http://check.getipintel.net/check.php?ip=<?php echo $ip; ?>&contact=<?php echo $getipintel_email; ?>" title="Get IP Intel http://getipintel.net/#web" target="_blank"><img src="images/getipintel.png" width="16" height="16" alt="GetIPIntel" /></a>
+                                &nbsp;&nbsp;
+                        <a href="https://proxycheck.io/v2/<?php echo $ip ?>?vpn=1&asn=1<?php echo (PROXYCHECKioKEY != "" ? "&key=public-" . constant("PROXYCHECKioKEY") : "") ?>" title="Proxy Check.io <?php echo (PROXYCHECKioKEY != "" ? "" : "Key is blank. Define PROXYCHECKioKEY in inc/config.php. Use double quotes") ?>" target="_blank"><img src="images/proxycheck.png" width="16" height="16" alt="ProxyCheck" /></a>
+                <?php
+                    } else {
+                        echo "(No IP address available)";
+                    }
+                else:	
+                    echo '(You do not have access to see the IP address)';
+                endif; // if current user is allowed to see the player's IP address
+                ?>
+            </td>
 		</tr>
 		<tr>
-                    <th>First Seen</th>
-                        <td><?php echo date($tformat, $time_add); ?></td>
-                    <th>Last Seen</th>
-                        <td><?php echo date($tformat, $time_edit); ?></td>
+            <th>First Seen</th>
+                <td><?php echo date($tformat, $time_add); ?></td>
+            <th>Last Seen</th>
+                <td><?php echo date($tformat, $time_edit); ?></td>
+		</tr>
+		<tr>
+            <th>Last App Client</th>
+                <td><?php echo $app; ?></td>
+            <th>Country Code</th>
+            <td><?php echo $isocode; ?> &nbsp; <a href="https://www.nationsonline.org/oneworld/country_code_list.htm" target="_blank">List</a></td>
 		</tr>
 	</tbody>
 </table>
