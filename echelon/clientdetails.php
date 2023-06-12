@@ -357,6 +357,7 @@ require 'inc/header.php';
                             <input class="form-control int dur" type="number" name="permmute" id="permmute" min="0" max="1" step="1" value="<?php echo $permmute; ?>">	
                         </div>
                     </div>
+                    <div><span style="font-size:small">Depends on b3 Abuse plugin</span></div>
                     <input type="hidden" name="token" value="<?php echo $permmute_token; ?>" />
                     <input type="hidden" name="cid" value="<?php echo $cid; ?>" />
                     <button class="btn btn-primary float-right my-1" type="submit" name="permmute-sub" value="Update PermMute">Update Perm Mute</button>
