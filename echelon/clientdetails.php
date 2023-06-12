@@ -32,12 +32,12 @@ else
     $chatlimit = 250;
 
 ## Get Client information ##
-$query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name, c.app, c.isocode
+$query = "SELECT c.ip, c.connections, c.guid, c.name, c.mask_level, c.greeting, c.time_add, c.time_edit, c.group_bits, g.name, c.app, c.isocode, c.permmute
             FROM clients c LEFT JOIN usergroups g ON c.group_bits = g.id WHERE c.id = ? LIMIT 1";
 $stmt = $db->mysql->prepare($query) or die('Database Error '. $db->mysql->error);
 $stmt->bind_param('i', $cid);
 $stmt->execute();
-$stmt->bind_result($ip, $connections, $guid, $name, $mask_level, $greeting, $time_add, $time_edit, $group_bits, $user_group, $app, $isocode);
+$stmt->bind_result($ip, $connections, $guid, $name, $mask_level, $greeting, $time_add, $time_edit, $group_bits, $user_group, $app, $isocode, $permmute);
 $stmt->fetch();
 $stmt->close();
 
@@ -160,6 +160,7 @@ require 'inc/header.php';
     <?php if($mem->reqLevel('edit_mask')) { ?><li class="nav-item"><a class="nav-link" id="cd-act-mask-tab" data-toggle="pill" href="#cd-act-mask" role="tab" aria-controls="cd-act-mask" aria-selected="false"><h6 class="my-auto">Mask Level</h6></a></li><?php } ?>
     <?php if($mem->reqLevel('greeting')) { ?><li class="nav-item"><a class="nav-link" id="setgreeting-tab" data-toggle="pill" href="#setgreeting" role="tab" aria-controls="setgreeting" aria-selected="false"><h6 class="my-auto">Greeting</h6></a></li><?php } ?>
     <?php if($mem->reqLevel('comment')) { ?><li class="nav-item"><a class="nav-link" id="addcomment-tab" data-toggle="pill" href="#addcomment" role="tab" aria-controls="addcomment" aria-selected="false"><h6 class="my-auto">Comment</h6></a></li><?php } ?>
+    <?php if($mem->reqLevel('permmute')) { ?><li class="nav-item"><a class="nav-link" id="permmute-tab" data-toggle="pill" href="#permmutesection" role="tab" aria-controls="permmute" aria-selected="false"><h6 class="my-auto">Perm Mute</h6></a></li><?php } ?>
     <?php 
         if(!$no_plugins_active)
             $plugins->displayCDFormTab();
@@ -339,6 +340,26 @@ require 'inc/header.php';
                     <input type="hidden" name="token" value="<?php echo $comment_token; ?>" />
                     <input type="hidden" name="cid" value="<?php echo $cid; ?>" />
                     <button class="btn btn-primary float-right my-1" type="submit" name="comment-sub">Add Comment</button>
+                </form>
+            </div>
+        </div>
+		<?php
+			endif;            
+			if($mem->reqLevel('permmute')) :
+			$permmute_token = genFormToken('permmute');	
+		?>
+        <div class="tab-pane fade" id="permmutesection" role="tabpanel" aria-labelledby="permmute-tab">
+            <div class="col justify-content-center">
+                <form action="actions/b3/permmute.php" method="post">
+                    <div class="form-row">
+                    <label class="col-form-label col-sm-4" for="permmute">Permanent Mute</label>
+                        <div class="col-md-4">
+                            <input class="form-control int dur" type="number" name="permmute" id="permmute" min="0" max="1" step="1" value="<?php echo $permmute; ?>">	
+                        </div>
+                    </div>
+                    <input type="hidden" name="token" value="<?php echo $permmute_token; ?>" />
+                    <input type="hidden" name="cid" value="<?php echo $cid; ?>" />
+                    <button class="btn btn-primary float-right my-1" type="submit" name="permmute-sub" value="Update PermMute">Update Perm Mute</button>
                 </form>
             </div>
         </div>
