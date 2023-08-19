@@ -19,7 +19,9 @@ $reportArray = [ "select a value" => "",
     "Map Results" => "map_results",
     "Map Results Detail" => "map_results_detail",
     "Random Map Selection" => "random_map_selection",
-    "Watched Players" => "watched_players"];
+    "Watched Players" => "watched_players",
+    "Countries" => "countries",
+    "Client Apps" => "client_apps"];
 $report = "";
 
 
@@ -67,22 +69,30 @@ switch ($report) {
             . "      , IF (redscore = bluescore, 1, 0) AS tie, IF(bluescore > redscore, 1, 0) AS bluewin, IF (bluescore - redscore > 2, 1, 0) AS bluewinby3"
             . "      , IF (highplayer = 99 OR lowplayer = 99, NULL, (highplayer + lowplayer) / 2) AS averageplayers, redscore + bluescore AS totalflags"
             . "   FROM mapresult"
-            . "   WHERE createddate > DATE_ADD(CURRENT_TIMESTAMP, INTERVAL -14 DAY)"
+            . "   WHERE createddate > DATE_ADD(CURDATE(), INTERVAL -14 DAY)"
             . " ) AS s"
             . " GROUP BY mapname"
             . " ORDER BY mapname;";
         break;
     
     case "map_results_detail":
-        $query_limit = "select id, mapname, redscore as red, bluescore as blue, maptime, lowplayer as low, highplayer as high, createddate from mapresult where createddate > DATE_ADD(CURRENT_TIMESTAMP, INTERVAL -14 DAY) order by mapname, id;";
+        $query_limit = "select id, mapname, redscore as red, bluescore as blue, maptime, lowplayer as low, highplayer as high, createddate from mapresult where createddate > DATE_ADD(CURDATE(), INTERVAL -14 DAY) order by mapname, id;";
         break;
     
     case "random_map_selection":
-        $query_limit = "select mapname, startmessage from (select mapname, startmessage from mapconfig where skiprandom = '0' and datelastadd < DATE_ADD(CURRENT_DATE(), INTERVAL -15 DAY) order by rand() limit 45) as s order by mapname;";
+        $query_limit = "select mapname, startmessage from (select mapname, startmessage from mapconfig where skiprandom = '0' and datelastadd < DATE_ADD(CURDATE(), INTERVAL -15 DAY) order by rand() limit 45) as s order by mapname;";
         break;
 
     case "watched_players":
         $query_limit = "select f.id, f.client_id, f.admin_id, f.time_add, f.reason, c.name as client_name, a.name as admin_name from following f left join clients c on c.id = f.client_id left join clients a on a.id = f.admin_id;";
+        break;
+
+    case "countries":
+        $query_limit = "select count(id) as cnt, isocode from clients group by isocode order by count(id), isocode;";
+        break;
+
+    case "client_apps":
+        $query_limit = "select count(id) as cnt, app from clients group by app order by count(id), app;";
         break;
 
     case "":
@@ -217,8 +227,7 @@ if(!$db->error) :
                         printf("<th>%s</th>", "mapname");
                         printf("<th>%s</th>", "startmessage");
                         break;
-                    
-                    
+                                        
                     case "watched_players":
                         printf("<th>%s</th>", "id");
                         printf("<th>%s</th>", "client_id");
@@ -227,6 +236,16 @@ if(!$db->error) :
                         printf("<th>%s</th>", "reason");
                         printf("<th>%s</th>", "client_name");
                         printf("<th>%s</th>", "admin_name");
+                        break;
+                     
+                    case "countries":
+                        printf("<th>%s</th>", "count");
+                        printf("<th>%s</th>", "country");
+                        break;
+                     
+                    case "client_apps":
+                        printf("<th>%s</th>", "count");
+                        printf("<th>%s</th>", "client_app");
                         break;
                      
                     case "":
@@ -543,7 +562,46 @@ EOD;
 EOD;
                  
                         echo $data;
-                        endforeach;
+                        endforeach;                      
+                        break;
+        
+                    case "countries":
+                        foreach($data_set as $row): // get data from query and loop
+                            $cnt = $row['cnt'];
+                            $isocode = $row['isocode'];
+                        
+                            $alter = alter();
+
+                            // setup heredoc (table data)			
+                            $data = <<<EOD
+                            <tr class="$alter">
+                            <td>$cnt</td>
+                            <td>$isocode</td>
+                            </tr>
+EOD;
+                 
+                        echo $data;
+                        endforeach;                      
+                        break;
+        
+                    case "client_apps":
+                        foreach($data_set as $row): // get data from query and loop
+                            $cnt = $row['cnt'];
+                            $app = $row['app'];
+                        
+                            $alter = alter();
+
+                            // setup heredoc (table data)			
+                            $data = <<<EOD
+                            <tr class="$alter">
+                            <td>$cnt</td>
+                            <td>$app</td>
+                            </tr>
+EOD;
+                 
+                        echo $data;
+                        endforeach;                      
+                        break;
         
                     case "":
                     default:
