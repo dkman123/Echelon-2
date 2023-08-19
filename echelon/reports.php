@@ -88,11 +88,11 @@ switch ($report) {
         break;
 
     case "countries":
-        $query_limit = "select count(id) as cnt, isocode from clients group by isocode order by count(id), isocode;";
+        $query_limit = "select count(id) as cnt, isocode from clients group by isocode order by count(id) desc, isocode;";
         break;
 
     case "client_apps":
-        $query_limit = "select count(id) as cnt, app from clients group by app order by count(id), app;";
+        $query_limit = "select count(id) as cnt, app from clients group by app order by count(id) desc, app;";
         break;
 
     case "":
