@@ -28,7 +28,10 @@ All the files are copyrighted by WatchMiltan, Eire.32 (eire32designs.com) and Bi
 
 ## Installation ##
 
-download zip from https://github.com/dkman123/Echelon-2
+- Get the files
+git clone https://github.com/dkman123/Echelon-2.git
+
+or direct download zip from https://github.com/dkman123/Echelon-2
 
 install apache prereq
 > sudo apt install apache2
@@ -133,9 +136,6 @@ source ~/Documents/Echelon-2/echelon.sql
 source ~/Documents/Echelon-2/echelon-2.3.1-mapconfig.sql
 source ~/Documents/Echelon-2/echelon-2.3.2-mapconfig.sql
 ```
-
-- Get the files
-git clone https://github.com/dkman123/Echelon-2.git
 
 - Copy/Move the echelon folder to your /var/www/html folder
 - Set permissions
