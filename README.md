@@ -36,7 +36,7 @@ or direct download zip from https://github.com/dkman123/Echelon-2
 install apache prereq
 > sudo apt install apache2
 
-install php prerequisites
+install php prerequisites (for old php)
 ```
 sudo apt install php
 sudo apt install php-mysqli
@@ -44,6 +44,10 @@ sudo apt install php-mysqli
 with php7.4 you need to specify the version
 ```
 sudo apt install php7.4-mysqli
+```
+with php 8.1
+```
+sudo apt install php php8.1-mysqli libapache2-mod-php8.1
 ```
 
 to test php and verify extensions (not necessary)
