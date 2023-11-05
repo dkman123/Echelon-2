@@ -122,7 +122,8 @@ if you get a blank white page make sure php installed (you're hitting a php erro
 mysql -u root -p
 
 CREATE DATABASE echelon CHARACTER SET utf8;
-GRANT ALL ON echelon.* TO 'echelon'@'localhost' IDENTIFIED BY '{NEWPASSWORD}';
+CREATE USER 'echelon'@'localhost' IDENTIFIED WITH mysql_native_password BY '{NEWPASSWORD}';
+GRANT ALL PRIVILEGES ON echelon.* TO 'echelon'@'localhost';
 FLUSH PRIVILEGES;
 ```
 - Run the echelon.sql file on your database to create the Echelon tables
