@@ -134,6 +134,9 @@ source ~/Documents/Echelon-2/echelon-2.3.1-mapconfig.sql
 source ~/Documents/Echelon-2/echelon-2.3.2-mapconfig.sql
 ```
 
+- Get the files
+git clone https://github.com/dkman123/Echelon-2.git
+
 - Copy/Move the echelon folder to your /var/www/html folder
 - Set permissions
 ```
