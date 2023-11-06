@@ -274,13 +274,24 @@ sudo add-apt-repository ppa:ondrej/php
 sudo apt update
 
 sudo apt upgrade
-sudo apt install php7.3 php7.3-mysqli libapache2-mod-php7.3 php7.3-mbstring php7.3-common php7.3-mysql php7.3-cli 
+sudo apt install php7.3 php7.3-mysqli libapache2-mod-php7.3 php7.3-mbstring php7.3-common
+#php7.3-mysql php7.3-cli 
 ```
  ~~sudo apt install php7.3-fpm~~
 
 (optional) common extensions
 ```
 sudo apt install php7.3-xml php7.3-xmlrpc php7.3-curl php7.3-gd php7.3-imagick php7.3-cli php7.3-dev php7.3-imap php7.3-mbstring php7.3-opcache php7.3-soap php7.3-zip php7.3-intl -y
+```
+
+For version 7.4
+```
+sudo add-apt-repository ppa:ondrej/php
+sudo apt-get update
+
+# To update these modules use the installation helper below
+#sudo apt install php7.4-cli php7.4-fpm php7.4-opcache
+sudo apt install php7.4 php7.4-mysqli libapache2-mod-php7.4 php7.4-mbstring
 ```
 
 In the php.ini enable the mbstring extension
