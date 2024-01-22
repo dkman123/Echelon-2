@@ -7,18 +7,19 @@ $pagination = false; // this page requires the pagination part of the footer
 require 'inc.php';
 
 ## Do Stuff ##
-if($_GET['id'])
-	$mid = $_GET['id'];
+if(filter_input(INPUT_GET, 'id')) {
+    $mid = filter_input(INPUT_GET, 'id');
+}
 
 if(!isID($mid)) :
-	set_error('The mapconfig id that you have supplied is invalid. Please supply a valid mapconfig id.');
-	send('mapconfig.php');
-	exit;
+    set_error('The mapconfig id that you have supplied is invalid. Please supply a valid mapconfig id.');
+    send('mapconfig.php');
+    exit;
 endif;
 	
 if($mid == '') {
-	set_error('No map specified, please select one');
-	send('mapconfig.php');
+    set_error('No map specified, please select one');
+    send('mapconfig.php');
 }
 
 ## Get Client information ##
@@ -192,7 +193,8 @@ function isValidDate(dateString)
         
         <table style="width:90%; margin:5px">
             <tr>
-                <td style="text-align:left">NOTE: Adding a new map reloads on the original map.</td>
+                <td style="text-align:left">NOTE: To add a new map just change the name/settings and click the Add button.
+                    <br />It will add the new map, but refresh to the original map.</td>
                 <td style="text-align:right">
                     <button class="btn btn-primary my-2" type="button" onclick="goBack()">Go Back</button>
                     &nbsp; &nbsp; &nbsp; &nbsp;
@@ -206,6 +208,6 @@ function isValidDate(dateString)
 </div>
 
 <?php
-// Close page off with the footer
-require 'inc/footer.php'; 
+    // Close page off with the footer
+    require 'inc/footer.php'; 
 ?>

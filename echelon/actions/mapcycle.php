@@ -2,14 +2,12 @@
 $auth_name = 'mapconfig';
 require '../inc.php';
 
-// set vars
+/// TODO: move to config
+#$mapcycleFile = "../../echelonv1/files/mapcycle.txt";
+
 $data = "";
-
-$mapcycleFile = "../../echelonv1/files/mapcycle.txt";
-
-if (isset($_POST['data'])) {
-    //$data = (cleanvar($_POST['data']));
-    $data = ($_POST['data']);
+if (filter_input(INPUT_POST, 'data')) {
+    $data = (filter_input(INPUT_POST, 'data'));
 }
 
 if ($data !== "") {
@@ -17,9 +15,9 @@ if ($data !== "") {
     $data = str_replace("<br>", "\n", $data);
     $data = str_replace("<br />", "\n", $data);
     $data = str_replace("\\\"", "\"", $data);
-    if (!file_put_contents($mapcycleFile, $data)) :
+    if (!file_put_contents($mapcycleFile, $data)) {
         sendBack('There is a problem. The mapcycle.txt has not been written.');
-    endif;
+    }
 }
 else {
     sendBack('There is a problem. There was no data to write.');  

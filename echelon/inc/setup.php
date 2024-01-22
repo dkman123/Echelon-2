@@ -1,27 +1,28 @@
 <?php 
-if (!empty($_SERVER['SCRIPT_FILENAME']) && 'setup.php' == basename($_SERVER['SCRIPT_FILENAME']))
-  		die ('Please do not load this page directly. Thanks!');
+if (!empty(filter_input(INPUT_GET, 'SCRIPT_FILENAME')) && 'setup.php' == basename(filter_input(INPUT_GET, 'SCRIPT_FILENAME'))) {
+    die ('Please do not load this page directly. Thanks!');
+}
 
 require_once 'config.php'; // if config is not loaded load it in
 
-$this_page = cleanvar($_SERVER["PHP_SELF"]);
+$this_page = cleanvar(filter_input(INPUT_SERVER, "PHP_SELF"));
 
 $cookie_time = strtotime( '+30 days' ); // 31 days from now
 ## setup the game var ##
-if($_GET['game']) {
-	$game = $_GET['game'];
-	setcookie("game", $game, $cookie_time, PATH); // set the cookie to game value
+if(filter_input(INPUT_GET, 'game')) {
+    $game = filter_input(INPUT_GET, 'game');
+    setcookie("game", $game, $cookie_time, PATH); // set the cookie to game value
 
-} elseif($_POST['game']) {
-	$game = addslashes($_POST['game']);
-	setcookie("game", $game, $cookie_time, PATH); // set the cookie to game value
+} elseif(filter_input(INPUT_POST, 'game')) {
+    $game = addslashes(filter_input(INPUT_POST, 'game'));
+    setcookie("game", $game, $cookie_time, PATH); // set the cookie to game value
 
-} elseif($_COOKIE['game']) {
-	$game = $_COOKIE['game'];
+} elseif(filter_input(INPUT_COOKIE, 'game')) {
+    $game = filter_input(INPUT_COOKIE, 'game');
 	
 } else {
-	$game = 1;
-	setcookie("game", $game, $cookie_time, PATH); // set the cookie to game value
+    $game = 1;
+    setcookie("game", $game, $cookie_time, PATH); // set the cookie to game value
 }
 
 
@@ -38,7 +39,7 @@ $num_games = $config['cosmos']['num_games'];
 $site_name = $config['cosmos']['name'];
 $limit_rows = $config['cosmos']['limit_rows'];
 $allow_ie = $config['cosmos']['allow_ie'];
-$min_pw_len = $config['cosmmos']['min_pw_len'];
+$min_pw_len = $config['cosmos']['min_pw_len'];
 $https_enabled = $config['cosmos']['https'];
 $key_expire = $config['cosmos']['user_key_expire']; // This var says how long it takes for a user creation key to expire
 $tformat = $config['cosmos']['time_format'];
@@ -49,23 +50,24 @@ define("EMAIL", $config['cosmos']['email']);
 
 ## Time Zone Setup ##
 if($time_zone == '') {
-	$time_zone == 'Europe/London';
-	define("NO_TIME_ZONE", TRUE);
+    $time_zone = 'Europe/London';
+    define("NO_TIME_ZONE", TRUE);
 } else {
-	define("NO_TIME_ZONE", FALSE);
+    define("NO_TIME_ZONE", FALSE);
 }
 date_default_timezone_set($time_zone);
 
 
 // if $game is greater than num_games then game doesn't exist so send to error page with error and reset game to 1
 if($num_games == 0) {
-	$no_games = true;
+    $no_games = true;
 
 } elseif($game > $num_games) {
-	setcookie("game", 1, time()*60*60*24*31, $path); // set the cookie to game value
-	set_error('That game doesn\'t exist');
-	if($page != 'error')
-		sendError();
+    setcookie("game", 1, time()*60*60*24*31, $path); // set the cookie to game value
+    set_error('That game doesn\'t exist');
+    if($page != 'error') {
+        sendError();
+    }
 }
 
 ## Get the games Information for the current game ##
@@ -73,10 +75,11 @@ $config['game'] = $dbl->getGameInfo($game);
 
 ## setup the plugins into an array
 if(!empty($config['game']['plugins'])) {
-	$config['game']['plugins'] = explode(",", $config['game']['plugins']);
-	$no_plugins_active = false;
-} else
-	$no_plugins_active = true;
+    $config['game']['plugins'] = explode(",", $config['game']['plugins']);
+    $no_plugins_active = false;
+} else {
+    $no_plugins_active = true;
+}
 
 ## Get and setup the servers information into the array ##
 $servers = $dbl->getServers($game);
@@ -86,34 +89,37 @@ $config['game']['servers'] = array(); // create array
 ## add server information to config array##
 $i = 1; // start counter ("i") at 1
 
+if (!isset($page)) {
+    $page = "unknown";
+}
 if(!empty($servers) && $page != 'banlist') :
 
-	foreach($servers as $server) : // loop thro the list of servers for current game
-		
-		$config['game']['servers'][$i] = array();
-		$config['game']['servers'][$i]['name'] = $server['name'];
-		$config['game']['servers'][$i]['ip'] = $server['ip'];
-		$config['game']['servers'][$i]['pb_active'] = $server['pb_active'];
-		$config['game']['servers'][$i]['rcon_pass'] = $server['rcon_pass'];
-		$config['game']['servers'][$i]['rcon_ip'] = $server['rcon_ip'];
-		$config['game']['servers'][$i]['rcon_port'] = $server['rcon_port'];
-		
-		$i++; // increment counter
-	endforeach;
+    foreach($servers as $server) : // loop thro the list of servers for current game
+
+        $config['game']['servers'][$i] = array();
+        $config['game']['servers'][$i]['name'] = $server['name'];
+        $config['game']['servers'][$i]['ip'] = $server['ip'];
+        $config['game']['servers'][$i]['pb_active'] = $server['pb_active'];
+        $config['game']['servers'][$i]['rcon_pass'] = $server['rcon_pass'];
+        $config['game']['servers'][$i]['rcon_ip'] = $server['rcon_ip'];
+        $config['game']['servers'][$i]['rcon_port'] = $server['rcon_port'];
+
+        $i++; // increment counter
+    endforeach;
 
 endif;
 
 if($config['game']['num_srvs'] > 1) :
-	define("MULTI_SERVER", true); 
-	define("NO_SERVER", false);
+    define("MULTI_SERVER", true); 
+    define("NO_SERVER", false);
 	
 elseif($config['game']['num_srvs'] == 1) : 
-	define("MULTI_SERVER", false);
-	define("NO_SERVER", false);
+    define("MULTI_SERVER", false);
+    define("NO_SERVER", false);
 
 else :	// equal to no servers
-	define("MULTI_SERVER", false);
-	define("NO_SERVER", true);
+    define("MULTI_SERVER", false);
+    define("NO_SERVER", true);
 
 endif;
 

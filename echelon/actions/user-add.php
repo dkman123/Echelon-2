@@ -7,21 +7,24 @@ $auth_name = 'add_user';
 require '../inc.php';
 
 ## if form is submitted ##	
-if(!isset($_POST['add-user'])) // if this was not a post request then send back with error 
-	sendBack('Please do not access that page directly');
+if(!isset(filter_input(INPUT_POST, 'add-user'))) { // if this was not a post request then send back with error 
+sendBack('Please do not access that page directly');
+}
 
 ## check that the sent form token is corret
-if(!verifyFormToken('adduser', $tokens)) // verify token
-	ifTokenBad('Add User');
+if(!verifyFormToken('adduser', $tokens)) { // verify token
+    ifTokenBad('Add User');
+}
 
 // set email and comment and clean
-$email = cleanvar($_POST['email']);
-$comment = cleanvar($_POST['comment']);
-$group = cleanvar($_POST['group']);
+$email = cleanvar(filter_input(INPUT_POST, 'email'));
+$comment = cleanvar(filter_input(INPUT_POST, 'comment'));
+$group = cleanvar(filter_input(INPUT_POST, 'group'));
 
 // check the new email address is a valid email address
-if(!filter_var($email,FILTER_VALIDATE_EMAIL))
-	sendBack('That email is not valid');
+if(!filter_var($email,FILTER_VALIDATE_EMAIL)) {
+    sendBack('That email is not valid');
+}
 
 // Create a unique key for the user
 $text = $admin_id.$email.uniqid(microtime(), true).$group; // take sent data and some random data to create a random string
@@ -33,7 +36,7 @@ $body = '<html><body>';
 $body .= '<h2>Echelon User Key</h2>';
 $body .= $config['cosmos']['email_header'];
 $body .= 'This is the key you will need to use to register on Echelon. 
-			<a href="http://'.$_SERVER['SERVER_NAME'].PATH.'register.php?key='.$user_key.'&amp;email='.$email.'">Register here</a>.<br />';
+    <a href="http://'.filter_input(INPUT_SERVER, 'SERVER_NAME').PATH.'register.php?key='.$user_key.'&amp;email='.$email.'">Register here</a>.<br />';
 $body .= 'Registration Key: '.$user_key . '<br />';
 $body .= $config['cosmos']['email_footer'];
 $body .= '</body></html>';
@@ -44,7 +47,7 @@ $body = preg_replace('#%ech_name%#', $config['cosmos']['name'], $body);
 $body = preg_replace('#%name%#', 'new user', $body);
 
 $headers =  'MIME-Version: 1.0' . "\r\n"; 
-$headers = "From: echelon@".$_SERVER['HTTP_HOST']."\r\n";
+$headers = "From: echelon@".filter_input(INPUT_SERVER, 'HTTP_HOST')."\r\n";
 $headers .= "Reply-To: ". EMAIL ."\r\n";
 $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n"; 
 $subject = "Echelon User Registration";
@@ -69,9 +72,10 @@ try {
 
 ## run query to add key to the DB ##
 $add_user = $dbl->addEchKey($user_key, $email, $comment, $group, $mem->id);
-if(!$add_user)
-	sendBack('There was a problem adding the key into the database');
+if(!$add_user) {
+    sendBack('There was a problem adding the key into the database');
+}
 
 // all good send back good message
 #sendGood('Key Setup and Email has been sent to user');
-sendGood('Send this link to user: "http://'.$_SERVER['SERVER_NAME'].PATH.'register.php?key='.$user_key.'&amp;email='.$email.'"');
+sendGood('Send this link to user: "http://'.filter_input(INPUT_SERVER, 'SERVER_NAME').PATH.'register.php?key='.$user_key.'&amp;email='.$email.'"');

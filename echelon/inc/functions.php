@@ -12,20 +12,24 @@
 function testPW($pw) {
 
     // no space
-    if(preg_match('# #', $pw))
+    if(preg_match('# #', $pw)) {
         return false;
+    }
 
     // no dbl quote
-    if(preg_match('#"#', $pw))
+    if(preg_match('#"#', $pw)) {
         return false;
+    }
 
     // no single quote
-    if(preg_match("#'#", $pw))
+    if(preg_match("#'#", $pw)) {
         return false;
+    }
 
     // no equals signs
-    if(preg_match("#=#", $pw))
+    if(preg_match("#=#", $pw)) {
         return false;
+    }
 
     return true;
 }
@@ -39,26 +43,29 @@ function testPW($pw) {
 function isID($id) {
 
     // not empty
-    if(empty($id))
+    if(empty($id)) {
         return false;
+    }
 
     // stops first number of id being a zero
     $fc = substr($id, 0, 1);
-    if($fc == 0)
+    if($fc == 0) {
         return false;
+    }
 
-    if(!is_numeric($id))
+    if(!is_numeric($id)) {
         return false;
+    }
 
     return true;
-
 }
 
 function delUserLink($id, $token) {
 
-    if($_SESSION['user_id'] == $id) // user cannot delete themselves
+    if($_SESSION['user_id'] == $id) { // user cannot delete themselves
         return NULL;
-    else
+    }
+    else {
         return '<form action="actions/user-edit.php" method="post" class="user-del">
                     <input type="hidden" value="'.$token.'" name="token" />
                     <input type="hidden" value="'.$id.'" name="id" />
@@ -66,7 +73,7 @@ function delUserLink($id, $token) {
                     <div class="row ml-auto"><!-- find better solution, like resizing table cell/column -->
                     <input class="harddel" type="image" src="images/user_del.png" alt="Delete" title="Delete this user forever" />
                 </form>';
-
+    }
 }
 
 function editUserLink($id, $name) {
@@ -135,11 +142,12 @@ function alter() {
 
     $alt = !$alt;
 
-    if($alt)
+    if($alt) {
         return 'odd';
-    else
+    }
+    else {
         return 'even';
-
+    }
 }
 
 /**
@@ -153,12 +161,19 @@ function alter() {
  */
 function rcon($rcon_ip, $rcon_port, $rcon_pass, $command) {
 
+    if (!isset($errno)) {
+        $errno = 0;
+    }
+    if (!isset($errstr)) {
+        $errstr = "";
+    }    
+    
     $fp = fsockopen("udp://$rcon_ip",$rcon_port, $errno, $errstr, 2);
     @socket_set_timeout($fp, 2); // if error, ignore because some servers block this command
 
     if(!$fp) {
         return "$errstr ($errno)<br>\n";
-    sendBack('Could not send RCON Command.');
+        //sendBack('Could not send RCON Command.');
     } else {
         $query = "\xFF\xFF\xFF\xFFrcon \"" . $rcon_pass . "\" " . $command;
         fwrite($fp,$query);
@@ -275,12 +290,14 @@ function randPass($count) {
  */
 function detectAJAX() {
     /* AJAX check  */
-    if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+    if(!empty(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) && strtolower(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) == 'xmlhttprequest') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 
-    // This method is not fool proof since all servers do not support the $_SERVER['HTTP_X_REQUESTED_WITH'] varible.
+    // This method is not fool proof since all servers do not support the filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH') varible.
 }
 
 /**
@@ -289,10 +306,12 @@ function detectAJAX() {
  * @return bool
  */
 function detectIE() {
-    if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))
+    if (null !== filter_input(INPUT_SERVER, 'HTTP_USER_AGENT') && (strpos(filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'), 'MSIE') !== false)) {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 /**
@@ -305,8 +324,9 @@ function locked() {
         global $dbl;
         global $mem;
 
-        if($mem->loggedIn())
-                session::logout(); // if they are logged in log them out
+        if($mem->loggedIn()) {
+            session::logout(); // if they are logged in log them out
+        }
 
         $ip = getRealIp(); // get users ip
         $dbl->blacklist($ip); // add top blacklist
@@ -336,8 +356,12 @@ function checkBL() {
 function trys() { //
     echo '<div class="form-group row"><small class="mx-auto">';
 
-    if($_SESSION['wrong'] != 0)
+    if (!isset($_SESSION['wrong'])) {
+        $_SESSION['wrong'] = 0;
+    }
+    if($_SESSION['wrong'] != 0) {
         echo 'You have used '.$_SESSION['wrong'].' of 3 attempts to login.';
+    }
 
     echo '</small></div>';
 }
@@ -384,7 +408,7 @@ function set_good($msg) {
  * @param string $msg - the warning message
  */
 function set_warning($msg) {
-    $_SESSION['warning'] = $msg;
+    $_SERVER['warning'] = $msg;
 }
 
 function css_file($name) {
@@ -397,12 +421,15 @@ function css_file($name) {
  * @return string $ip - IP address of the user
  */
 function getRealIp() {
-    if(!empty($_SERVER['HTTP_CLIENT_IP']))  // check ip from share internet
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-    elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))  // to check ip is pass from proxy
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    else
-        $ip = $_SERVER['REMOTE_ADDR'];
+    if(!empty(filter_input(INPUT_SERVER, 'HTTP_CLIENT_IP'))) {  // check ip from share internet
+        $ip = filter_input(INPUT_SERVER, 'HTTP_CLIENT_IP');
+    }
+    elseif(!empty(filter_input(INPUT_SERVER, 'HTTP_X_FORWARDED_FOR'))) {  // to check ip is pass from proxy
+        $ip = filter_input(INPUT_SERVER, 'HTTP_X_FORWARDED_FOR');
+    }
+    else {
+        $ip = filter_input(INPUT_SERVER, 'REMOTE_ADDR');
+    }
 
     return $ip;
 }
@@ -411,11 +438,11 @@ function getRealIp() {
  * Check is a form var is empty if so set error and send back to referring page
  *
  * @param string $var - the variable to check
- * @param string $field - the name of the variable (used in the error message) eg. 'your new password'
+ * @param string $field - the name of the variable (used in the error message) eg. 'your new password
  */
 function emptyInput($var, $field) {
     $var = trim($var);
-    $ref = $_SERVER['HTTP_REFERER'];
+    $ref = filter_input(INPUT_SERVER, 'HTTP_REFERER');
     if(empty($var)) {
         set_error('You must put something in the '.$field.' field.');
         send($ref); // send back to referering page
@@ -430,6 +457,9 @@ function emptyInput($var, $field) {
  * @return string
  */
 function cleanvar($var) {
+    if(empty($var)) {
+        return $var;
+    }
     $var = trim(htmlentities(strip_tags($var)));
 
     return $var;
@@ -441,7 +471,7 @@ function cleanvar($var) {
  * @param string $error - the error message that will be sent to the user
  */
 function sendBack($error) {
-    $ref = $_SERVER['HTTP_REFERER'];
+    $ref = filter_input(INPUT_SERVER, 'HTTP_REFERER');
     set_error($error);
     send($ref); // send back to referering page
     exit; // end script
@@ -453,7 +483,7 @@ function sendBack($error) {
  * @param string $good - success message to be sent to the user
  */
 function sendGood($good) {
-    $ref = $_SERVER['HTTP_REFERER'];
+    $ref = filter_input(INPUT_SERVER, 'HTTP_REFERER');
     set_good($good);
     send($ref); // send back to referering page
     exit; // end script
@@ -493,28 +523,36 @@ function sendHome() {
  * Send to the error page
  */
 function sendError($add = NULL) {
-    if($add == NULL)
+    if($add == NULL) {
         header("Location: ".PATH."error.php");
-    else
+    }
+    else {
         header("Location: ".PATH."error.php?t={$add}");
+    }
 }
 
 /**
  * Handy tooltip creation function
  */
 function tooltip($msg, $float = false) {
-    if($float == true)
+    if($float == true) {
         echo '<a class="tooltip" style="float: left; display: block;" title="'. $msg .'"></a>';
-    else
+    }
+    else {
         echo '<a class="tooltip" title="'. $msg .'"></a>';
+    }
 }
 
 /**
  * Echo out simple clientdetails link
  */
 function clientLink($name, $id, $game_id = NULL) {
-    if(!empty($game_id))
+    if(!empty($game_id)) {
         $href = '&amp;game='.$game_id;
+    }
+    else {
+        $href= "";
+    }
 
     return '<a href="clientdetails.php?id='.$id.$href.'" title="Check out '.$name.' client information profile">'.htmlentities($name).'</a>';
 }
@@ -523,24 +561,28 @@ function clientLink($name, $id, $game_id = NULL) {
  * Echo out simple cid details link
  */
 function cidLink($name, $id, $game_id = NULL) {
-    if(!empty($game_id))
+    if(!empty($game_id)) {
         $href = '&amp;game='.$game_id;
+    }
+    else {
+        $href= "";
+    }
 
     return '<a href="clientdetails.php?id='.$id.$href.'" title="Check out '.$name.' client information profile">'.$id.'</a>';
 }
 
 /**
- * Echo out external link to punkbusted GUID banlist checker
+ * Echo out external link to punk-busted GUID banlist checker
  */
 function guidCheckLink($guid) {
     echo '<a class="external" href="http://www.punksbusted.com/cgi-bin/membership/guidcheck.cgi?guid='.$guid.'" title="Check this guid is not banned by PunksBusted.com">'.$guid.'</a>';
 }
 
 /**
- * parse IP address into link to ipwhois
+ * parse IP address into link to ip whois
  *
  * @param string $ip - ip address to use in link
- * @return string $msg - the link to whois of IP
+ * @return string $msg - the link to whois the IP
  */
 function ipLink($ip) {
     $msg = '<a href="http://whois.domaintools.com/'.$ip.'/" class="external" title="WhoIs IP Search this User">'.$ip.'</a>';
@@ -555,8 +597,9 @@ function ipLink($ip) {
  * @return string $msg - the link to whois of IP
  */
 function emailLink($email, $name) {
-    if($name == '') // if name is not set make name the same as email
+    if($name == '') { // if name is not set make name the same as email
         $name = $email;
+    }
 
     $msg = '<a href="mailto:'.$email.'" title="Send '.$name.' an email">'.$email.'</a>';
     return $msg;
@@ -571,14 +614,17 @@ function emailLink($email, $name) {
  */
 function echUserLink($id, $name, $name_title = NULL, $name_box = NULL) {
 
-    if(empty($name_title))
+    if(empty($name_title)) {
         $name_title = $name;
+    }
 
-    if(empty($name))
+    if(empty($name)) {
         $name = $id;
+    }
     
-    if(empty($name_box))
+    if(empty($name_box)) {
         $name_box = $name;
+    }
 
     $msg = '<a href="sa.php?t=user&amp;id='.$id.'" title="View '.$name_title.' in more detail">'.$name_box.'</a>';
     return $msg;
@@ -612,29 +658,34 @@ function recordNumber($start_row, $max_rows, $total_rows) {
 
 function queryStringPage() {
 
-    if (!empty($_SERVER['QUERY_STRING'])) :
+    if (!empty(filter_input(INPUT_SERVER, 'QUERY_STRING'))) {
 
-        $params = explode("&", $_SERVER['QUERY_STRING']);
+        $params = explode("&", filter_input(INPUT_SERVER, 'QUERY_STRING'));
         $newParams = array();
 
         foreach ($params as $param) {
-            if (stristr($param, "p=") == false)
+            if (stristr($param, "p=") == false) {
                 array_push($newParams, $param);
+            }
         }
 
-        if (count($newParams) != 0)
+        if (count($newParams) != 0) {
             $query_string = "&" . implode("&", $newParams);
+        }
 
-    endif;
+    } else {
+        $query_string = "";
+    }
 
     /// DEBUG
+    //echlog('warning', "QUERY_STRING " . filter_input(INPUT_SERVER, 'QUERY_STRING'));
     //echlog('warning', $query_string);
     return $query_string;
 }
 
 function linkSort($keyword, $title) {
 
-    $this_p = cleanvar($_SERVER['PHP_SELF']);
+    $this_p = cleanvar(filter_input(INPUT_SERVER, 'PHP_SELF'));
 
     echo '<a title="Sort information by '.$title.' ascending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=ASC"><img src="images/asc.png" width="10" height="6" alt="ASC" class="asc-img" /></a>
             &nbsp;
@@ -644,7 +695,7 @@ function linkSort($keyword, $title) {
 
 function linkSortBan($keyword, $title, $t) {
 
-    $this_p = cleanvar($_SERVER['PHP_SELF']);
+    $this_p = cleanvar(filter_input(INPUT_SERVER, 'PHP_SELF'));
 
     echo '<a title="Sort information by '.$title.' ascending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=ASC&amp;t='.$t.'"><img src="images/asc.png" width="10" height="6" alt="ASC" class="asc-img" /></a>
             &nbsp;
@@ -654,7 +705,7 @@ function linkSortBan($keyword, $title, $t) {
 
 function linkSortClients($keyword, $title, $is_search, $search_type, $search_string) {
 
-    $this_p = cleanvar($_SERVER['PHP_SELF']);
+    $this_p = cleanvar(filter_input(INPUT_SERVER, 'PHP_SELF'));
 
     if($is_search == false) :
         echo'<a title="Sort information by '.$title.' ascending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=ASC"><img src="images/asc.png" width="10" height="6" alt="ASC" class="asc-img" /></a>
@@ -667,18 +718,20 @@ function linkSortClients($keyword, $title, $is_search, $search_type, $search_str
 }
 
 /**
- * Echo out simple mapconfigdetails link
+ * Echo out simple map config details link
  */
 function mapconfigLink($mapname, $id, $game_id = NULL) {
-    if(!empty($game_id))
+    $href = "";
+    if(!empty($game_id)) {
         $href = '&amp;game='.$game_id;
+    }
 
     return '<a href="mapconfigdetails.php?id='.$id.$href.'" title="Check out '.$mapname.' information">'.$mapname.'</a>';
 }
 
 function linkSortMaps($keyword, $title, $is_search, $search_type, $search_string) {
 
-    $this_p = cleanvar($_SERVER['PHP_SELF']);
+    $this_p = cleanvar(filter_input(INPUT_SERVER, 'PHP_SELF'));
 
     if($is_search == false) :
         echo'<a title="Sort information by '.$title.' ascending." href="'.$this_p.'?p=0&amp;ob='.$keyword.'&amp;o=ASC"><img src="images/asc.png" width="10" height="6" alt="ASC" class="asc-img" /></a>
@@ -693,7 +746,7 @@ function linkSortMaps($keyword, $title, $is_search, $search_type, $search_string
 }
 
 /**
- * Removes colour coding from a text string
+ * Removes color coding from a text string
  *
  * @param string $text - the text to clean
  * @return string - the cleaned text
@@ -710,7 +763,6 @@ function removeColorCode($text) {
  * @return string - the cleaned/escaped text
  */
 function tableClean($text) {
-
     $text = htmlspecialchars($text);
     return $text;
 }
@@ -741,8 +793,9 @@ function timeExpire($time_expire, $type, $inactive) {
 
     }
 
-    if($msg == '') // if we got nothing then return unknown
+    if($msg == '') { // if we got nothing then return unknown
         $msg = '<em>(Unknwon)</em>';
+    }
 
     return $msg;
 }
@@ -750,14 +803,17 @@ function timeExpire($time_expire, $type, $inactive) {
 function timeExpirePen($time_expire) {
     global $tformat;
 
-    if (($time_expire <= time()) && ($time_expire != -1))
+    if (($time_expire <= time()) && ($time_expire != -1)) {
         $msg = "<span class=\"p-expired\">".date($tformat, $time_expire)."</span>"; 
+    }
 
-    if ($time_expire == -1)
+    if ($time_expire == -1) {
         $msg = "<span class=\"p-permanent\">Permanent</span>"; 
+    }
 
-    if ($time_expire > time())
+    if ($time_expire > time()) {
         $msg = "<span class=\"p-active\">".date($tformat, $time_expire)."</span>"; 
+    }
 
     return $msg;
 }
@@ -771,18 +827,24 @@ function timeExpirePen($time_expire) {
  */
 function penDuration($time, $duration) {
 
-    if($time == 'h') // if time is in hours
+    if($time == 'h') { // if time is in hours
             $duration = $duration*60;
-    elseif($time == 'd') // time in days
+    }
+    elseif($time == 'd') { // time in days
             $duration = $duration*60*24;
-    elseif($time == 'w') // time in weeks
+    }
+    elseif($time == 'w') { // time in weeks
             $duration = $duration*60*24*7;
-    elseif($time == 'mn') // time in months (lets just say 30 days to a month)
+    }
+    elseif($time == 'mn') { // time in months (lets just say 30 days to a month)
             $duration = $duration*60*24*30;
-    elseif($time == 'y') // time in years
+    }
+    elseif($time == 'y') { // time in years
             $duration = $duration*60*24*365;
-    else // default time to mintues
+    }
+    else { // default time to mintues
             $duration = $duration;
+    }
 
     return $duration;
 
@@ -800,8 +862,9 @@ function dbErrorShow($error) {
  */
 function echLog($type, $message, $code = NULL, $traces = NULL) {
 
-    if(empty($message))
+    if(empty($message)) {
         $message = 'There was an error of some sort';
+    }
 
     // open the log file for appending
     if($f = @fopen(ECH_LOG,'a')) : // returns false on error
@@ -832,12 +895,14 @@ function echLog($type, $message, $code = NULL, $traces = NULL) {
         // construct the log message
         $log_msg = "-------\n".date("[Y-m-d H:i:s]") . $type_msg;
 
-        if(isset($code) && !empty($code))
+        if(isset($code) && !empty($code)) {
             $log_msg .=	" - Code: $code -" ;
+        }
 
         $log_msg .=	" Message: $message\n";
-        if(!empty($traces))
+        if(!empty($traces)) {
             $log_msg .= "#Trace: \n" . $traces. "\n";
+        }
 
         // write the log message
         fwrite($f, $log_msg);
@@ -880,23 +945,26 @@ LOGMSGG;
 /**
  * Check if the supplied token is valid
  *
- * @param string $from - the form name
+ * @param string $form - the form name
  * @param string $tokens - the server-side tokens array
  * @return bool
  */
 function verifyFormToken($form, $tokens) {
         
     // check if a session is started and a token is transmitted, if not return an error
-    if(!isset($tokens[$form])) 
+    if(!isset($tokens[$form])) {
         return false;
+    }
 
     // check if the form is sent with token in it
-    if(!isset($_POST['token']))
+    if(!isset($_POST['token'])) {
         return false;
+    }
 
     // compare the tokens against each other if they are still the same
-    if ($tokens[$form] !== $_POST['token'])
+    if ($tokens[$form] !== $_POST['token']) {
         return false;
+    }
 
     return true;
 }
@@ -907,16 +975,19 @@ function verifyFormToken($form, $tokens) {
 function verifyFormTokenLogin($form) {
         
     // check if a session is started and a token is transmitted, if not return an error
-    if(!isset($_SESSION['tokens'][$form]))
+    if(!isset($_SESSION['tokens'][$form])) {
         return false;
+    }
 
     // check if the form is sent with token in it
-    if(!isset($_POST['token']))
+    if(!isset($_POST['token'])) {
         return false;
-
+    }
+        
     // compare the tokens against each other if they are still the same
-    if ($_SESSION['tokens'][$form] !== $_POST['token'])
+    if ($_SESSION['tokens'][$form] !== $_POST['token']) {
         return false;
+    }
 
     return true;
 }
@@ -924,7 +995,7 @@ function verifyFormTokenLogin($form) {
 /**
  * Generate and set a form token
  *
- * @param string $from - the form name
+ * @param string $form - the form name
  * @set session vars
  * @return bool
  */
@@ -956,6 +1027,17 @@ function ifTokenBad($place) {
  */
 function errors() {
     $message = '';
+    
+    if (!isset($_SESSION['good'])) {
+        $_SESSION['good'] = '';
+    }
+    if (!isset($_SESSION['error'])) {
+        $_SESSION['error'] = '';
+    }
+    if (!isset($_SESSION['warning'])) {
+        $_SESSION['warning'] = '';
+    }
+    
     if($_SESSION['good'] != '') {
         $message .= '<div class="alert alert-success alert-dismissible fade show m-2" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong>  '.$_SESSION['good'].'</div>';
         $_SESSION['good'] = '';
@@ -966,12 +1048,12 @@ function errors() {
         $_SESSION['error'] = '';
     }
 	
-	if($_SESSION['warning'] != '') {
+    if($_SESSION['warning'] != '') {
         $message .= '<div class="alert alert-warning alert-dismissible fade show m-2" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Warning!</strong> '.$_SESSION['warning'].'</div>';
         $_SESSION['warning'] = '';
     }
     
-	echo $message;
+    echo $message;
 }
 
 /**
@@ -980,17 +1062,18 @@ function errors() {
  * @return bool
  */
 function detectSSL(){
-    if($_SERVER["https"] == "on")
+    if(filter_input(INPUT_SERVER, 'https') == "on") {
         return true;
-
-    elseif($_SERVER["https"] == 1)
+    }
+    elseif(filter_input(INPUT_SERVER, 'https') == 1) {
         return true;
-
-    elseif($_SERVER['SERVER_PORT'] == 443)
+    }
+    elseif(filter_input(INPUT_SERVER, 'SERVER_PORT') == 443) {
         return true;
-
-    else
+    }
+    else {
         return false;
+    }
 }
 
 /**
@@ -1033,17 +1116,24 @@ function time_duration($seconds, $use = null, $zeros = false) {
         $seconds = $seconds % $value;
     }
 
-    // Build the string
-    foreach ($segments as $key => $value) {
-        $segment_name = substr($key, 0, -1);
-        $segment = $value . ' ' . $segment_name;
-        if ($value != 1) {
-            $segment .= 's';
+    if ($segments) {
+        // Build the string
+        foreach ($segments as $key => $value) {
+            $segment_name = substr($key, 0, -1);
+            $segment = $value . ' ' . $segment_name;
+            if ($value != 1) {
+                $segment .= 's';
+            }
+            $array[] = $segment;
         }
-        $array[] = $segment;
     }
 
-    $str = implode(', ', $array);
+    if ($array) {
+        $str = implode(', ', $array);
+    }
+    else {
+        $str = "";
+    }
     return $str;
 }
 
@@ -1071,126 +1161,154 @@ function getEchVer(){
 function isHome() {
     global $page;
 
-    if($page == 'home')
+    if($page == 'home') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isClients() {
     global $page;
 
-    if($page == 'client')
+    if($page == 'client') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isCD() {
     global $page;
 
-    if($page == 'clientdetails')
+    if($page == 'clientdetails') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isRegister() {
     global $page;
 
-    if($page == 'register')
+    if($page == 'register') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isLogin() {
     global $page;
 
-    if($page == 'login')
+    if($page == 'login') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isError() {
     global $page;
 
-    if($page == 'error')
+    if($page == 'error') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 
 function isSettings() {
     global $page;
 
-    if($page == 'settings')
+    if($page == 'settings') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isSettingsGame() {
     global $page;
 
-    if($page == 'settings-game')
+    if($page == 'settings-game') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isSettingsServer() {
     global $page;
 
-    if($page == 'settings-server')
+    if($page == 'settings-server') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isSA() {
     global $page;
 
-    if($page == 'sa')
+    if($page == 'sa') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isPerms() {
     global $page;
 
-    if($page == 'perms')
+    if($page == 'perms') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isMe() {
     global $page;
 
-    if($page == 'me')
+    if($page == 'me') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isPubbans() {
     global $page;
 
-    if($page == 'pubbans')
+    if($page == 'pubbans') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function isMap() {
     global $page;
 
-    if($page == 'map')
+    if($page == 'map') {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }

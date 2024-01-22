@@ -13,25 +13,28 @@ require 'inc.php';
 
 /// NOTE: these need to correspond to the names in the listmgmt-edit.php file
 $listArray = [
-        "select a value" => "",
-        "banlistvpn" => "banlistvpn",
-        "banlistrfa" => "banlistrfa",
-        "ipwhitelist" => "ipwhitelist",
-        "guidbanlist" => "guidbanlist",
-        "banlist" => "banlist"
-    ];
+    "select a value" => "",
+    "banlistvpn" => "banlistvpn",
+    "banlistrfa" => "banlistrfa",
+    "ipwhitelist" => "ipwhitelist",
+    "guidbanlist" => "guidbanlist",
+    "banlist" => "banlist"
+];
 
 $list = "";
 //$list = "banlistrfa";
 //$data = "192.255.30.0";
 
-if (isset($_POST['list'])) {
-    $list = ($_POST['list']);
+if (filter_input(INPUT_POST, 'list')) {
+    $list = (filter_input(INPUT_POST, 'list'));
+}
+
+if (!isset($data)){
+    $data = "";
 }
 
 ## Require Header ##	
 require 'inc/header.php';
-
 
 ?>
 
@@ -104,5 +107,5 @@ function doSearch(){
 
 </script>
 <?php
-	require 'inc/footer.php'; 
+    require 'inc/footer.php'; 
 ?>

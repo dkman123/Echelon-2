@@ -114,6 +114,12 @@ input:checked+.slider:before{
     word-break: break-all;
     white-space: normal;
 }
+.even {
+    background-color: #transparent;
+}
+.odd {
+    background-color: #ccc;
+}
 
 @media (min-width: 1200px) {
     .container-wide {

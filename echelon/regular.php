@@ -10,10 +10,6 @@ require 'inc.php';
 ##########################
 ######## Varibles ########
 
-## Default Vars ##
-$orderby = "time_edit";
-$order = "ASC"; // either ASC or DESC
-
 //$time = 1250237292;
 $time = time();
 $lenght = 7; // default lenght (in days) that the client must have connected to the server(s) on in order to be on the list
@@ -24,21 +20,28 @@ $clan_tags = $config['cosmos']['reg_clan_tags']; // use the clan tags stored in 
 $clan_tags = explode(',', $clan_tags);
 
 ## Sorts requests vars ##
-if($_GET['ob'])
-	$orderby = addslashes($_GET['ob']);
+$orderby = "time_edit";
+if(filter_input(INPUT_GET, 'ob')) {
+    $orderby = addslashes(filter_input(INPUT_GET, 'ob'));
+}
 
-if($_GET['o'])
-	$order = addslashes($_GET['o']);
+$order = "ASC"; // either ASC or DESC
+if(filter_input(INPUT_GET, 'o')) {
+    $order = addslashes(filter_input(INPUT_GET, 'o'));
+}
 
 // allowed things to sort by
 $allowed_orderby = array('id', 'name', 'connections', 'group_bits', 'time_edit');
 // Check if the sent varible is in the allowed array 
-if(!in_array($orderby, $allowed_orderby))
-	$orderby = 'time_edit'; // if not just set to default id
+if(!in_array($orderby, $allowed_orderby)) {
+    $orderby = 'time_edit'; // if not just set to default id
+}
 
 ## Page Vars ##
-if ($_GET['p'])
-  $page_no = addslashes($_GET['p']);
+$page_no = '1';
+if (filter_input(INPUT_GET, 'p')) {
+    $page_no = addslashes(filter_input(INPUT_GET, 'p'));
+}
 
 $start_row = $page_no * $limit_rows;
 
@@ -58,10 +61,12 @@ foreach ($clan_tags as $tag) {
 $query .= sprintf("ORDER BY %s", $orderby);
 
 ## Append this section to all queries since it is the same for all ##
-if($order == "DESC")
-	$query .= " DESC"; // set to desc 
-else
-	$query .= " ASC"; // default to ASC if nothing adds up
+if($order == "DESC") {
+    $query .= " DESC"; // set to desc 
+}
+else {
+    $query .= " ASC"; // default to ASC if nothing adds up
+}
 
 $query_limit = sprintf("%s LIMIT %s, %s", $query, $start_row, $limit_rows); // add limit section
 
@@ -76,74 +81,74 @@ if(!$db->error) :
 <div class="card-body table table-hover table-sm table-responsive">
 
 <table width="100%">
-	<thead>
-		<tr>
-			<th>Name
-				<?php linkSort('name', 'Name'); ?>
-			</th>
-			<th>Connections
-				<?php linkSort('connections', 'Connections'); ?>
-			</th>
-			<th>Client-ID
-				<?php linkSort('id', 'Client-id'); ?>
-			</th>
-			<th>Level
-				<?php linkSort('group_bits', 'Level'); ?>
-			</th>
-			<th>Last Seen
-				<?php linkSort('time_edit', 'Last Seen'); ?>
-			</th>
-		</tr>
-	</thead>
-	<tfoot>
-		<tr>
-			<th colspan="5"></th>
-		</tr>
-	</tfoot>
-	<tbody>
+    <thead>
+        <tr>
+            <th>Name
+                <?php linkSort('name', 'Name'); ?>
+            </th>
+            <th>Connections
+                <?php linkSort('connections', 'Connections'); ?>
+            </th>
+            <th>Client-ID
+                <?php linkSort('id', 'Client-id'); ?>
+            </th>
+            <th>Level
+                <?php linkSort('group_bits', 'Level'); ?>
+            </th>
+            <th>Last Seen
+                <?php linkSort('time_edit', 'Last Seen'); ?>
+            </th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th colspan="5"></th>
+        </tr>
+    </tfoot>
+    <tbody>
 	<?php
 	if($num_rows > 0) : // query contains stuff so spit it out
 	 
-		foreach($data_set as $clients): // get data from query and loop
-			$cid = $clients['id'];
-			$name = $clients['name'];
-			$level = $clients['level'];
-			$connections = $clients['connections'];
-			$time_edit = $clients['time_edit'];
-			
-			## Change to human readable ##
-			$time_edit_read = date($tformat, $time_edit); // this must be after the time_diff
-			
-			## row color ##
-			$alter = alter();
-	
-			$client = clientLink($name, $cid);
-	
-			// setup heredoc (table data)			
-			$data = <<<EOD
-			<tr class="$alter">
-				<td><strong>$client</td>
-				<td>$connections</td>
-				<td>@$cid</td>
-				<td>$level</td>
-				<td><em>$time_edit_read</em></td>
-			</tr>
+            foreach($data_set as $clients): // get data from query and loop
+                $cid = $clients['id'];
+                $name = $clients['name'];
+                $level = $clients['level'];
+                $connections = $clients['connections'];
+                $time_edit = $clients['time_edit'];
+
+                ## Change to human readable ##
+                $time_edit_read = date($tformat, $time_edit); // this must be after the time_diff
+
+                ## row color ##
+                $alter = alter();
+
+                $client = clientLink($name, $cid);
+
+                // setup heredoc (table data)			
+                $data = <<<EOD
+                <tr class="$alter">
+                    <td><strong>$client</td>
+                    <td>$connections</td>
+                    <td>@$cid</td>
+                    <td>$level</td>
+                    <td><em>$time_edit_read</em></td>
+                </tr>
 EOD;
 
-			echo $data;
-		endforeach;
-		$no_data = false;
+                echo $data;
+            endforeach;
+            $no_data = false;
 		
 	else:
-		$no_data = true;
-		echo '<tr class="odd"><td colspan="5">There are no people who have had a total mininium of '.$connections_limit.' connections and been seen in the last '.$lenght.' days.</td></tr>';
+            $no_data = true;
+            echo '<tr class="odd"><td colspan="5">There are no people who have had a total mininium of '.$connections_limit.' connections and been seen in the last '.$lenght.' days.</td></tr>';
 	endif; // no records
 	?>
-	</tbody>
+    </tbody>
 </table>
 </div></div></div>
 <?php 
-	endif; // db error
+    endif; // db error
 
-	require 'inc/footer.php'; 
+    require 'inc/footer.php'; 
 ?>

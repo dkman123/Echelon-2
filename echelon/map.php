@@ -1,5 +1,6 @@
 <?php
 $page = "map";
+$page_title = "map";
 $auth_name = 'clients';
 $b3_conn = true; // this page needs to connect to the B3 database
 $pagination = false; // this page requires the pagination part of the footer
@@ -11,6 +12,10 @@ $time = time();
 $length = 7; // length in days
 
 $query = "SELECT ip FROM clients WHERE ($time - time_edit < $length*60*60*24 )";
+$start_row = 1;
+$limit_rows = 25000;
+$query_limit = sprintf("%s LIMIT %s, %s", $query, $start_row, $limit_rows); // add limit section
+
 
 ## Prepare and run Query ##
 $stmt = $db->mysql->prepare($query) or die('Database Error: '.$db->mysql->error);
@@ -19,11 +24,14 @@ $stmt->store_result(); // store results (needed to count num_rows)
 $num_rows = $stmt->num_rows; // finds the number fo rows retrieved from the database
 $stmt->bind_result($ip); // store results
 
-if($num_rows > 0) :
-	while($stmt->fetch()) : // get results and put results in an array
-		$ips[] = $ip;
-	endwhile;
-endif;
+if($num_rows > 0) {
+    while($stmt->fetch()) : // get results and put results in an array
+        $ips[] = $ip;
+    endwhile;
+}
+else {
+    $ips = array();
+}
 
 $stmt->free_result(); // free the data in memory from store_result
 $stmt->close(); // closes the prepared statement
@@ -32,67 +40,67 @@ $geoip_db_file = 'lib/GeoIP.dat';
 
 if(file_exists($geoip_db_file)) :
 
-	require_once("inc/geoip.php");
+    require_once("inc/geoip.php");
 
-	$gi = geoip_open($geoip_db_file, GEOIP_STANDARD);
+    $gi = geoip_open($geoip_db_file, GEOIP_STANDARD);
 
-	$countries = array();
+    $countries = array();
 
-	foreach($ips as $ip) :
+    foreach($ips as $ip) :
 
-		$country_name = geoip_country_name_by_addr($gi, $ip);
-		$count = $countries[$country_name];
-		$countries[$country_name] = $count + 1;
-	endforeach;
+        $country_name = geoip_country_name_by_addr($gi, $ip);
+        $count = $countries[$country_name];
+        $countries[$country_name] = $count + 1;
+    endforeach;
 
-	geoip_close($gi);
+    geoip_close($gi);
 
-	$num_countries = count($countries);
-        
-	// unfortunately the map isn't working. just results in:
-	// <div id="google-visualization-geomap-0"></div>
-        // TODO: see if i can get a google heatmap working https://developers.google.com/maps/documentation/javascript/examples/layer-heatmap
-	/*
-	$map_js = "
-	<script type='text/javascript' src='http://www.google.com/jsapi'></script>
-	<script type='text/javascript'>
-		google.load('visualization', '1', {'packages': ['geomap']});
-		google.setOnLoadCallback(drawMap);
+    $num_countries = count($countries);
 
-		function drawMap() {
-			var data = new google.visualization.DataTable();
-			data.addRows(".$num_countries.");
-			data.addColumn('string', 'Country');
-			data.addColumn('number', 'Player Connections');";
-			
-			$i = 0;
-			foreach($countries as $key => $value) :
-				
-				$map_js .= "data.setValue(". $i .", 0, '". $key ."');
-				data.setValue(". $i .", 1, ". $value .");";
-				
-				$i++;
-			endforeach;
-			
-	$map_js .= "
-			var options = {};
-			options['dataMode'] = 'regions';
-			options['width'] = '800px';
-			options['height'] = '550px';
+    // unfortunately the map isn't working. just results in:
+    // <div id="google-visualization-geomap-0"></div>
+    // TODO: see if i can get a google heatmap working https://developers.google.com/maps/documentation/javascript/examples/layer-heatmap
+    /*
+    $map_js = "
+    <script type='text/javascript' src='http://www.google.com/jsapi'></script>
+    <script type='text/javascript'>
+        google.load('visualization', '1', {'packages': ['geomap']});
+        google.setOnLoadCallback(drawMap);
 
-			var container = document.getElementById('map-box');
-			var geomap = new google.visualization.GeoMap(container);
-			geomap.draw(data, options);
-		};
-	</script>
-	";
-	*/
-	
-	$geoip_db = true;
-	
+        function drawMap() {
+            var data = new google.visualization.DataTable();
+            data.addRows(".$num_countries.");
+            data.addColumn('string', 'Country');
+            data.addColumn('number', 'Player Connections');";
+
+            $i = 0;
+            foreach($countries as $key => $value) :
+
+                $map_js .= "data.setValue(". $i .", 0, '". $key ."');
+                data.setValue(". $i .", 1, ". $value .");";
+
+                $i++;
+            endforeach;
+
+            $map_js .= "
+            var options = {};
+            options['dataMode'] = 'regions';
+            options['width'] = '800px';
+            options['height'] = '550px';
+
+            var container = document.getElementById('map-box');
+            var geomap = new google.visualization.GeoMap(container);
+            geomap.draw(data, options);
+        };
+    </script>
+    ";
+    */
+
+    $geoip_db = true;
+
 else:
-	$geoip_db = false;
-	$map_js = NULL;
+    $geoip_db = false;
+    $map_js = NULL;
 
 endif;
 
@@ -101,13 +109,13 @@ require 'inc/header.php';
 
 if(!$geoip_db) : ?>
 
-	<h3>Player Map Error</h3>
-		<p>This page requires that you have downloaded <a href="http://www.maxmind.com/app/geoip_country">Maxmind's GeoIP Database</a>, and place in in the "lib" folder with the name "GeoIP.dat".</p>
+    <h3>Player Map Error</h3>
+        <p>This page requires that you have downloaded <a href="http://www.maxmind.com/app/geoip_country">Maxmind's GeoIP Database</a>, and place in in the "lib" folder with the name "GeoIP.dat".</p>
 
 <?php else: ?>
 
-	<h3>Player Map</h3>
-	<div id="map-box"></div>
+    <h3>Player Map</h3>
+    <div id="map-box"></div>
         
 <div class="container">
     <div class="container my-2">
@@ -126,12 +134,12 @@ if(!$geoip_db) : ?>
     array_multisort ($countries, SORT_DESC);
 
     foreach ($countries as $key => $value) {
-            if (is_null($key) || $key == "") {
-                    printf("%s:&nbsp;&nbsp;%d<br />\n", "Not Found", $value); 
-            }
-            else {
-                    printf("%s:&nbsp;&nbsp;%d<br />\n", $key, $value); 
-            }
+        if (is_null($key) || $key == "") {
+            printf("%s:&nbsp;&nbsp;%d<br />\n", "Not Found", $value); 
+        }
+        else {
+            printf("%s:&nbsp;&nbsp;%d<br />\n", $key, $value); 
+        }
     }
     unset($key);
     unset($value);

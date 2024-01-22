@@ -2,39 +2,35 @@
 $auth_name = 'listmgmt';
 require '../inc.php';
 
-// set vars
-$data = "";
-
-$list = "";
-
-$t = "";
-
 $lf = "\n";  /// NOTE: using unix LF of just \n.  Windows may need CRLF /r/n
 
-if (isset($_POST['data'])) {
-    $data = (cleanvar($_POST['data']));
-    $data = ($_POST['data']);
+$data = "";
+if (!empty(filter_input(INPUT_POST, 'data'))) {
+    //$data = (cleanvar(filter_input(INPUT_POST, 'data')));
+    $data = (filter_input(INPUT_POST, 'data'));
 }
 
-if (isset($_POST['list'])) {
-    //$list = (cleanvar($_POST['list']));
-    $list = ($_POST['list']);
+$list = "";
+if (!empty(filter_input(INPUT_POST, 'list'))) {
+    //$list = (cleanvar(filter_input(INPUT_POST, 'list')));
+    $list = (filter_input(INPUT_POST, 'list'));
 }
 
-if (isset($_POST['t'])) {
-    //$t = (cleanvar($_POST['t']));
-    $t = ($_POST['t']);
+$t = "";
+if (!empty(filter_input(INPUT_POST, 't'))) {
+    //$t = (cleanvar(filter_input(INPUT_POST, 't')));
+    $t = (filter_input(INPUT_POST, 't'));
 }
 
 /// NOTE: these need to correspond to the names in the listmgmt.php file
 $listArray = [
-        "select a value" => "",
-        "banlistvpn" => "../../echelonv1/files/banlistvpn.txt",
-        "banlistrfa" => "../../echelonv1/files/banlistrfa.txt",
-        "ipwhitelist" => "../../echelonv1/files/ipwhitelist.txt",
-        "guidbanlist" => "../../echelonv1/files/guidbanlist.txt",
-        "banlist" => "../../echelonv1/files/banlist.txt"
-    ];
+    "select a value" => "",
+    "banlistvpn" => "../../echelonv1/files/banlistvpn.txt",
+    "banlistrfa" => "../../echelonv1/files/banlistrfa.txt",
+    "ipwhitelist" => "../../echelonv1/files/ipwhitelist.txt",
+    "guidbanlist" => "../../echelonv1/files/guidbanlist.txt",
+    "banlist" => "../../echelonv1/files/banlist.txt"
+];
 
 $file = $listArray[$list];
 //echlog('warning', $file);

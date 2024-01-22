@@ -59,10 +59,12 @@ class plugins {
         foreach(self::$plugins_class  as $plugin) :
             if(method_exists($plugin, 'returnClientBio')) {
                 $content = $plugin->returnClientBio();
-                if (!(empty($content)))
+                if (!(empty($content))) {
                     echo $content;
-                else
+                }
+                else {
                     return NULL;
+                }
             }
         endforeach;
     }
@@ -76,8 +78,9 @@ class plugins {
         foreach(self::$plugins_class as $plugin) :
             if(method_exists($plugin, 'returnClientFormTab')) {
                 $content = '<li class="nav-item">' .$plugin->returnClientFormTab(). '</li>';
-                if (!(empty($plugin->returnClientBio())))
+                if (!(empty($plugin->returnClientBio()))) {
                     echo $content;
+                }
             }
         endforeach;
     }
@@ -92,8 +95,9 @@ class plugins {
                 $content = $plugin->returnClientNavTab();
                 $idx = $idx + 1;
                 //echo("<br /> content length: " . strlen($content));
-                if (!(empty($plugin->returnClientBio())))
+                if (!(empty($plugin->returnClientBio()))) {
                     echo '<li class="nav-item">'.$content.'</li>';
+                }
             }
         endforeach;
     }

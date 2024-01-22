@@ -1,6 +1,7 @@
 <?php
-if (!empty($_SERVER['SCRIPT_FILENAME']) && 'class.php' == basename($_SERVER['SCRIPT_FILENAME']))
-  		die ('Please do not load this page directly. Thanks!');
+if (!empty(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME')) && 'class.php' == basename(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME'))) {
+    die ('Please do not load this page directly. Thanks!');
+}
 
 /**
  * class chatlogs
@@ -34,8 +35,9 @@ class chatlogs extends plugins {
      * @return object $instance - the current instance of the class
      */
     public static function getInstance() {
-    if (!(self::$instance instanceof self))
+    if (!(self::$instance instanceof self)) {
         self::$instance = new self();
+    }
 
     return self::$instance;
 }
@@ -53,8 +55,9 @@ class chatlogs extends plugins {
         parent::setTitle('Chatlogger');
         parent::setVersion(1.0);
 
-        if(count($this->tables) != count($this->tables_names))
+        if(count($this->tables) != count($this->tables_names)) {
             parent::error('In your settings, there are not the same number of tables and table names listed.');
+        }
 
     } // end constructor
 
@@ -95,9 +98,9 @@ class chatlogs extends plugins {
 
         global $mem; // use the member class instance from outside this class
 
-        if($mem->reqLevel(__CLASS__))
+        if($mem->reqLevel(__CLASS__)) {
             return '<a class="nav-link" id="chatlog-tab" href="#chatlog" data-toggle="tab" role="tab" aria-controls="chatlog" aria-selected="false"><h6 class="my-auto">Chatlog</h6></a>';
-
+        }
     }   	
 
     /**
@@ -149,10 +152,12 @@ class chatlogs extends plugins {
         $tables = $this->getTables();
         $tables_names = $this->getTablesNames();
 
-        if(is_numeric($table_num))
+        if(is_numeric($table_num)) {
             $table_name = $tables[$table_num];
-        else
+        }
+        else {
             return false;
+        }
 
         $db = DB_B3::getPointer(); // get the db pointer
 
@@ -161,8 +166,9 @@ class chatlogs extends plugins {
 
         $results = $db->query($query); // run the query
 
-        if($db->error) // if there is an error
+        if($db->error) { // if there is an error
             return NULL;
+        }
 
         return $results;
 
@@ -176,25 +182,33 @@ class chatlogs extends plugins {
         global $mem;
         global $config; // get the config servers data
 
-        if(isset($_GET['chatlimit']))
-            $chatlimit = $_GET['chatlimit'];
-        else
+        if(filter_input(INPUT_GET, 'chatlimit')) {
+            $chatlimit = filter_input(INPUT_GET, 'chatlimit');
+        }
+        else {
             $chatlimit = 250;
+        }
 
-        if(isset($_GET['chatoffset']))
-            $chatoffset = $_GET['chatoffset'];
-        else
+        if(filter_input(INPUT_GET, 'chatoffset')) {
+            $chatoffset = filter_input(INPUT_GET, 'chatoffset');
+        }
+        else {
             $chatoffset = 0;
+        }
 
+        $db_error = false;
         $logic = $this->pageLogic($table_num, $chatlimit, $chatoffset);
 
-        if($logic == false)
-                set_error('The chatlogs table you asked for does not exist, please select a real table.');
-        elseif($logic == NULL)
-                $db_error = true;
-
-        if($db_error)
-                return 'There was a database error in retrieving the chatlogs';
+        if($logic == false) {
+            set_error('The chatlogs table you asked for does not exist, please select a real table.');
+        }
+        elseif($logic == NULL) {
+            $db_error = true;
+        }
+                
+        if($db_error) {
+            return 'There was a database error in retrieving the chatlogs';
+        }
 
         ## matching up tables
         $tables_names = $this->getTablesNames();
@@ -218,10 +232,12 @@ class chatlogs extends plugins {
         $i = 0;
         while($i < $num_tables) :
 
-            if($table_num == $i)
+            if($table_num == $i) {
                 $sel = 'selected="selected"';
-            else
+            }
+            else {
                 $sel = NULL;
+            }
 
             $content .= '<option value="'. $i .'" '.$sel.'>'. $tables_names[$i] .'</option>';
 
@@ -229,7 +245,7 @@ class chatlogs extends plugins {
         endwhile;
 
         $content .= '</select>
-                <input type="hidden" name="pl" value="'.__CLASS__.'" />
+            <input type="hidden" name="pl" value="'.__CLASS__.'" />
             </div>
                 <button class="btn btn-primary" value="Select" type="submit">Select</button>
             </div>
@@ -240,29 +256,29 @@ class chatlogs extends plugins {
         if($mem->reqLevel('chats_edit_tables')) :
 
             $content .= '
-            <form class="my-5" action="'.PATH.'lib/plugins/'.__CLASS__.'/actions.php" method="post" id="c-settings">
-                <h5 class="my-2 chat-fh">Table Settings</h5>
-            <div class="col justify-center">
-            <div class="form-group col">
+                <form class="my-5" action="'.PATH.'lib/plugins/'.__CLASS__.'/actions.php" method="post" id="c-settings">
+                    <h5 class="my-2 chat-fh">Table Settings</h5>
+                <div class="col justify-center">
+                <div class="form-group col">
 
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label" id="tables">MySQL Table Names</label>
-            <div class="col-sm-8">
-                <input type="text" name="tables" id="tables" class="form-control" value="'. implode(',', $this->getTables()) .'" />
-            </div>
-            </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" id="tables">MySQL Table Names</label>
+                <div class="col-sm-8">
+                    <input type="text" name="tables" id="tables" class="form-control" value="'. implode(',', $this->getTables()) .'" />
+                </div>
+                </div>
 
-            <div class="form-group row">
-                <label class="col-sm-4 col-form-label" id="table-names">Name</label>
-            <div class="col-sm-8">
-                <input type="text" name="table-names" id="table-names" class="form-control" value="'. implode(',', $this->getTablesNames()) .'" />
-            </div>
-            </div>
-                <small>Please specify each table seperate by a comma (eg. chatlog,chatlog2), and the same with the names (eg. MW2 Chat, MW3 Chat). Put the corresponding names and tables in the same order.</small>
-                <button class="btn btn-primary float-right my-2" value="Edit Settings" type="submit">Edit Settings</button>
-            </div>            
-            </div>
-            </form>';
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" id="table-names">Name</label>
+                <div class="col-sm-8">
+                    <input type="text" name="table-names" id="table-names" class="form-control" value="'. implode(',', $this->getTablesNames()) .'" />
+                </div>
+                </div>
+                    <small>Please specify each table seperate by a comma (eg. chatlog,chatlog2), and the same with the names (eg. MW2 Chat, MW3 Chat). Put the corresponding names and tables in the same order.</small>
+                    <button class="btn btn-primary float-right my-2" value="Edit Settings" type="submit">Edit Settings</button>
+                </div>            
+                </div>
+                </form>';
 
         endif;
 
@@ -295,26 +311,27 @@ class chatlogs extends plugins {
 
         if($logic['num_rows'] > 0) :
 
-            if(empty($table_num))
+            if(empty($table_num)) {
                 $table_num = 0;
+            }
 
-                $content .= '	
-                    <table width="100%" id="chat" rel="'. $table_num .'">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Message</th>
-                                <th>Time</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th colspan="5"></th>
-                            </tr>
-                        </tfoot>
-                        <tbody id="chatlog-body">';
+            $content .= '	
+                <table width="100%" id="chat" rel="'. $table_num .'">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Message</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th colspan="5"></th>
+                        </tr>
+                    </tfoot>
+                    <tbody id="chatlog-body">';
 
             $content .= $this->buildLines($logic['data']);
   
@@ -342,13 +359,17 @@ class chatlogs extends plugins {
     private function buildLines($data_set, $ani = false) {
 
         global $tformat; // get the standardised time format
+        $content = "";
 
-        if($ani == 'tb')
+        if($ani == 'tb') {
             $ani = 'tb-row';
-        elseif($ani == 'yes')
+        }
+        elseif($ani == 'yes') {
             $ani = 'animate';
-        else
+        }
+        else {
             $ani = '';
+        }
 
         if(count($data_set) > 0) :
 
@@ -360,8 +381,9 @@ class chatlogs extends plugins {
                 $time_read = date($tformat, $data['msg_time']);
 
                 ## Highlight Commands ##
-                if (substr($msg, 0,1) == '!' or substr($msg, 0,1) == '@')
+                if (substr($msg, 0,1) == '!' or substr($msg, 0,1) == '@') {
                     $msg = '<span class="chat-cmd">'. $msg ."</span>"; 
+                }
 
                 $alter = alter();
 
@@ -395,7 +417,7 @@ EOD;
         $table = $tables[$table_num]; // get the table from settings array
 
         $query = 'SELECT id, msg_time, msg_type, client_id, client_name, msg 
-                                FROM '. $table .' WHERE id > ? ORDER BY id DESC LIMIT 25';
+            FROM '. $table .' WHERE id > ? ORDER BY id DESC LIMIT 25';
 
         $stmt = $db->mysql->prepare($query) or die('Database Error'. $db->mysql->error);
         $stmt->bind_param('i', $id);
@@ -443,8 +465,9 @@ EOD;
 
                 $command = "say ^7[^3". $mem->name ."^7]: " . $talkback;
                 $return = rcon($rcon_ip, $rcon_port, $rcon_pass, $command);
-            } else
+            } else {
                 sendBack('You left the message box empty, please fill in the box to send a message to the server');
+            }
         else :	
             sendBack('You do not have the correct privilages to talkback to the server');
 
@@ -471,42 +494,47 @@ EOD;
 
         global $page; // get the current page name
 
-        if($page == __CLASS__) // if this is the chatlogs page, load the JS
+        if($page == __CLASS__) { // if this is the chatlogs page, load the JS
             return '<script src="'. PATH .'lib/plugins/'.__CLASS__.'/chats.js"></script>';
+        }
 
     }
 
     public function editSettings($tables, $names) {
 
-            global $game; // current game id
+        global $game; // current game id
 
-            $dbl = DBL::getInstance(); // get Echelon db pointer
-            $db = DB_B3::getPointer(); // get B3 Db pointer
+        $dbl = DBL::getInstance(); // get Echelon db pointer
+        $db = DB_B3::getPointer(); // get B3 Db pointer
 
-            $tables_array = explode(',', $tables);
+        $tables_array = explode(',', $tables);
 
-            foreach($tables_array as $table) : // check each table exists
-                    $query = "SELECT id FROM $table LIMIT 1";
+        foreach($tables_array as $table) : // check each table exists
+            $query = "SELECT id FROM $table LIMIT 1";
 
-                    if(!$stmt = $db->mysql->prepare($query)) // if table does not exist then prepare will fail
-            return false; // if not return false
-            endforeach;
+            if(!$stmt = $db->mysql->prepare($query)) { // if table does not exist then prepare will fail
+                return false; // if not return false
+            }
+        endforeach;
 
-            // Update the tables row If no entry to update, a new one is added
-            $result = $dbl->setSettings($tables, 'chats_table_'.$game, 's');
-            if(!$result)
-        $result = $dbl->addSettings($tables, 'chats_table_'.$game, 's');
-        if(!$result)
+        // Update the tables row If no entry to update, a new one is added
+        $result = $dbl->setSettings($tables, 'chats_table_'.$game, 's');
+        if(!$result) {
+            $result = $dbl->addSettings($tables, 'chats_table_'.$game, 's');
+        }
+        if(!$result) {
             return false; 
+        }
 
-            // Update the names row. If no entry to update, a new one is added
-            $result_n = $dbl->setSettings($names, 'chats_names_'.$game, 's');
-            if(!$result_n)
-        $result_n = $dbl->addSettings($names, 'chats_names_'.$game, 's');
+        // Update the names row. If no entry to update, a new one is added
+        $result_n = $dbl->setSettings($names, 'chats_names_'.$game, 's');
         if(!$result_n)
+        $result_n = $dbl->addSettings($names, 'chats_names_'.$game, 's');
+        if(!$result_n) {
             return false;
+        }
 
-            return true;
+        return true;
     }
 
 } // end class

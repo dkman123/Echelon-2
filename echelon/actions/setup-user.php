@@ -5,16 +5,17 @@ $b3_conn = false;
 require '../inc.php';
 
 // set and clean vars of unwanted materials
-$username = cleanvar($_POST['username']);
-$display = cleanvar($_POST['display']);
-$pw1 = cleanvar($_POST['pw1']);
-$pw2 = cleanvar($_POST['pw2']);
+$username = cleanvar(filter_input(INPUT_POST, 'username'));
+$display = cleanvar(filter_input(INPUT_POST, 'display'));
+$pw1 = cleanvar(filter_input(INPUT_POST, 'pw1'));
+$pw2 = cleanvar(filter_input(INPUT_POST, 'pw2'));
 
-$key = cleanvar($_POST['key']);
-$email = cleanvar($_POST['email']);
+$key = cleanvar(filter_input(INPUT_POST, 'key'));
+$email = cleanvar(filter_input(INPUT_POST, 'email'));
 
-if($pw1 != $pw2) // if the passwords don't match send them back
-	sendBack('The supplied passwords to do match');
+if($pw1 != $pw2) { // if the passwords don't match send them back
+    sendBack('The supplied passwords to do match');
+}
 
 // check for empty inputs
 emptyInput($display, 'display name');
@@ -22,13 +23,15 @@ emptyInput($username, 'username');
 emptyInput($pw1, 'your new password');
 
 // check the new email address is a valid email address
-if(!filter_var($email,FILTER_VALIDATE_EMAIL))
-	sendBack('That email address is not valid');
+if(!filter_var($email,FILTER_VALIDATE_EMAIL)) {
+    sendBack('That email address is not valid');
+}
 
 ## Check if key and email are valid ##
 $valid_key = $dbl->verifyRegKey($key, $email, $key_expire);
-if(!$valid_key) // if the key sent is a valid one
-	sendBack('The key or email you submitted are not valid.');
+if(!$valid_key) { // if the key sent is a valid one
+    sendBack('The key or email you submitted are not valid.');
+}
 
 ## Add user to users table ##
 // generate a new salt for the user
@@ -43,8 +46,9 @@ $admin_id = $results[1]; // id of the admin who added this user
 
 // username, display, email, password, salt, permissions, admin_id
 $result = $dbl->addUser($username, $display, $email, $password, $salt, $group, $admin_id);
-if($result == false) // if user was not added to the Db
-	sendBack('There was an error, account not setup.');
+if($result == false) { // if user was not added to the Db
+    sendBack('There was an error, account not setup.');
+}
 	
 ## Update user_keys table to deactive key ##
 $update = $dbl->deactiveKey($key);

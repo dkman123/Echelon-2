@@ -10,27 +10,28 @@ require 'inc.php';
 ##########################
 ######## Varibles ########
 
-## Default Vars ##
-$orderby = "time_add";
-$order = "DESC"; // pick either asc or desc
-
-
 ## Sorts requests vars ##
-if($_GET['ob'])
-	$orderby = addslashes($_GET['ob']);
+$orderby = "time_add";
+if(filter_input(INPUT_GET, 'ob')) {
+    $orderby = addslashes(filter_input(INPUT_GET, 'ob'));
+}
 
-if($_GET['o']) 
-	$order = addslashes($_GET['o']);
-
+$order = "DESC"; // pick either asc or desc
+if(filter_input(INPUT_GET, 'o')) {
+    $order = addslashes(filter_input(INPUT_GET, 'o'));
+}
 
 // allowed things to sort by
 $allowed_orderby = array('time_add');
-if(!in_array($orderby, $allowed_orderby)) // Check if the sent varible is in the allowed array 
-	$orderby = 'time_add'; // if not just set to default id
+if(!in_array($orderby, $allowed_orderby)) { // Check if the sent varible is in the allowed array 
+    $orderby = 'time_add'; // if not just set to default id
+}
 	
 ## Page Vars ##
-if ($_GET['p'])
-  $page_no = addslashes($_GET['p']);
+$page_no = 1;
+if (filter_input(INPUT_GET, 'p')) {
+    $page_no = addslashes(filter_input(INPUT_GET, 'p'));
+}
 
 $start_row = $page_no * $limit_rows;
 
@@ -39,17 +40,19 @@ $start_row = $page_no * $limit_rows;
 ######### QUERIES #########
 
 $query = "SELECT p.id, p.type, p.client_id, p.time_add, p.reason,
-		COALESCE(c1.id, '1') as admin_id, COALESCE(c1.name, 'B3') as admin_name, c2.name as client_name
-		FROM penalties p LEFT JOIN clients c1 ON c1.id = p.admin_id LEFT JOIN clients c2 ON c2.id = p.client_id
-		WHERE p.type = 'Notice'";
+    COALESCE(c1.id, '1') as admin_id, COALESCE(c1.name, 'B3') as admin_name, c2.name as client_name
+    FROM penalties p LEFT JOIN clients c1 ON c1.id = p.admin_id LEFT JOIN clients c2 ON c2.id = p.client_id
+    WHERE p.type = 'Notice'";
 
 $query .= "ORDER BY $orderby";
 
 ## Append this section to all queries since it is the same for all ##
-if($order == "DESC")
-	$query .= " DESC"; // set to desc 
-else
-	$query .= " ASC"; // default to ASC if nothing adds up
+if($order == "DESC") {
+    $query .= " DESC"; // set to desc 
+}
+else {
+    $query .= " ASC"; // default to ASC if nothing adds up
+}
 
 $query_limit = sprintf("%s LIMIT %s, %s", $query, $start_row, $limit_rows); // add limit section
 
@@ -64,68 +67,68 @@ if(!$db->error) :
 <h5 class="card-header">Notices</h5>
 <div class="card-body table table-hover table-sm table-responsive">
 <table width="100%">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Client-ID</th>
-			<th>Time Added
-				<?php linkSort('time_add', 'time added'); ?>
-			</th>
-			<th>Comment</th>
-			<th>Admin</th>
-		</tr>
-	</thead>
-	<tfoot>
-		<tr>
-			<th colspan="5">Click client name to see details.</th>
-		</tr>
-	</tfoot>
-	<tbody>
-	<?php
-	if($num_rows > 0) :
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Client-ID</th>
+            <th>Time Added
+                <?php linkSort('time_add', 'time added'); ?>
+            </th>
+            <th>Comment</th>
+            <th>Admin</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th colspan="5">Click client name to see details.</th>
+        </tr>
+    </tfoot>
+    <tbody>
+    <?php
+    if($num_rows > 0) :
 	 
-		foreach($data_set as $notice): // get data from query and loop
-			$cname = tableClean($notice['client_name']);
-			$cid = $notice['client_id'];
-			$aname = tableClean($notice['admin_name']);
-			$aid = $notice['admin_id'];
-			$reason = tableClean($notice['reason']);
-			$time_add = $notice['time_add'];
-			
-			## Change to human readable	time
-			$time_add = date($tformat, $time_add);
-			
-			## Row color
-			$alter = alter();
-				
-			$client = clientLink($cname, $cid);
-			$admin = clientLink($aname, $aid);
-	
-			// setup heredoc (table data)			
-			$data = <<<EOD
-			<tr class="$alter">
-				<td><strong>$client</strong></td>
-				<td>@$cid</td>
-				<td><em>$time_add</em></td>
-				<td>$reason</td>
-				<td><strong>$admin</strong></td>
-			</tr>
+        foreach($data_set as $notice): // get data from query and loop
+            $cname = tableClean($notice['client_name']);
+            $cid = $notice['client_id'];
+            $aname = tableClean($notice['admin_name']);
+            $aid = $notice['admin_id'];
+            $reason = tableClean($notice['reason']);
+            $time_add = $notice['time_add'];
+
+            ## Change to human readable	time
+            $time_add = date($tformat, $time_add);
+
+            ## Row color
+            $alter = alter();
+
+            $client = clientLink($cname, $cid);
+            $admin = clientLink($aname, $aid);
+
+            // setup heredoc (table data)			
+            $data = <<<EOD
+            <tr class="$alter">
+                <td><strong>$client</strong></td>
+                <td>@$cid</td>
+                <td><em>$time_add</em></td>
+                <td>$reason</td>
+                <td><strong>$admin</strong></td>
+            </tr>
 EOD;
 
-			echo $data;
-		endforeach;
-		
-		$no_data = false;
-	else:
-		$no_data = true;
-		echo '<tr class="odd"><td colspan="5">There are no notices in the database.</td></tr>';
-	endif; // no records
-	?>
-	</tbody>
+            echo $data;
+        endforeach;
+
+        $no_data = false;
+    else:
+        $no_data = true;
+        echo '<tr class="odd"><td colspan="5">There are no notices in the database.</td></tr>';
+    endif; // no records
+    ?>
+    </tbody>
 </table>
 </div></div></div>
 <?php 
-	endif; // db error
+    endif; // db error
 
-	require 'inc/footer.php'; 
+    require 'inc/footer.php'; 
 ?>
