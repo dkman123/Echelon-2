@@ -79,3 +79,10 @@ if(!isset($email_config)) {
 if(!isset($getipintel_email)) {
     $getipintel_email = "SOMETHING@mail.com";
 }
+
+# server_action_path should contain ending slash. path must have Write permissions.
+$server_action_path = "../../echelonv1/files/";
+#define("SERVER_ACTION_PATH", $server_action_path);
+# the map cycle file. must have Write permissions.
+$mapcycleFile = "../../echelonv1/files/mapcycle.txt";
+#define("MAPCYCLE_FILE", $mapcycleFile);
