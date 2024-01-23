@@ -29,7 +29,7 @@ if(!in_array($orderby, $allowed_orderby)) {
 }
 
 ## Page Vars ##
-$page_no = 1;
+$page_no = 0;
 if (filter_input(INPUT_GET, 'p')) {
     $page_no = addslashes(filter_input(INPUT_GET, 'p'));
 }

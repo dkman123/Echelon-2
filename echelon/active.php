@@ -41,7 +41,7 @@ if(!in_array($length, $allowed_length)) { // Check if the sent varible is in the
 }
 	
 ## Page Vars ##
-$page_no = 1;
+$page_no = 0;
 if (filter_input(INPUT_GET, 'p')) {
     $page_no = addslashes(filter_input(INPUT_GET, 'p'));
 }

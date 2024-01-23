@@ -23,15 +23,13 @@ require 'inc.php';
 ##########################
 ######## Varibles ########
 
-## Default Vars ##
-$orderby = "time_add";
-$order = "DESC";
-
 ## Sorts requests vars ##
+$orderby = "time_add";
 if(filter_input(INPUT_GET, 'ob')) {
     $orderby = addslashes(filter_input(INPUT_GET, 'ob'));
 }
 
+$order = "DESC";
 if(filter_input(INPUT_GET, 'o')) {
     $order = addslashes(filter_input(INPUT_GET, 'o'));
 }
@@ -43,6 +41,7 @@ if(!in_array($orderby, $allowed_orderby)) { // Check if the sent varible is in t
 }
 
 ## Page Vars ##
+$page_no = 0;
 if (filter_input(INPUT_GET, 'p')) {
     $page_no = addslashes($_GET['p']);
 }
