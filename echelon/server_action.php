@@ -56,7 +56,7 @@ require 'inc/header.php';
                 <td>Remove Map from game directory</td>
                 <td>Map Full Name</td>
                 <td>
-                    <input id="map" name="map" type="text" value="<?php echo $map ?>" maxlength="50" />
+                    <input id="map" name="map" type="text" value="<?php echo $map ?>" maxlength="50" placeholder="ut4_mapname.pk3" />
                 </td>
                 <td>
                     <button id="remove" type="button" onclick="doRemoveMap()">Remove Map</button>
