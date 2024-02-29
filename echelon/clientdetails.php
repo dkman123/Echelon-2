@@ -175,6 +175,9 @@ require 'inc/header.php';
         if(!$no_plugins_active) {
             $plugins->displayCDFormTab();
         }
+        else {
+            $plugins = null;
+        }
     ?>
 </ul>
 </div>
@@ -385,6 +388,9 @@ require 'inc/header.php';
                 ## Plugins CD Form ##
                 if(!$no_plugins_active) {
                     $plugins->displayCDForm($cid);
+                }
+                else {
+                    $plugins = null;
                 }
             ?>
     </div><!-- end #actions-box -->

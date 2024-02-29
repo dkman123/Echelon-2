@@ -48,7 +48,9 @@ $db_pw_cng = cleanvar(filter_input(INPUT_POST, 'cng-pw'));
 $db_pw = cleanvar(filter_input(INPUT_POST, 'db-pw'));
 $db_name = cleanvar(filter_input(INPUT_POST, 'db-name'));
 // plugins enabled
-$g_plugins = filter_input(INPUT_POST, 'plugins');
+#$g_plugins = explode(",", filter_input(INPUT_POST, 'active-plugins'));
+#echlog("debug", "settings-game " . join(",", $g_plugins));
+$g_plugins = filter_input(INPUT_POST, 'active-plugins');
 // Verify Password
 $password = filter_input(INPUT_POST, 'password'); // do not clean passwords
 
@@ -83,17 +85,19 @@ if($is_add) :
     }
 endif;
 
-if(!empty($g_plugins)) :
-    foreach($g_plugins as $plugin) :
-        $enabled .= $plugin.',';
-    endforeach;
+#$enabled = '';
+#if(!empty($g_plugins)) :
+#    foreach($g_plugins as $plugin) :
+#        $enabled .= $plugin.',';
+#    endforeach;
+#    $enabled = substr($enabled, 0, -1); // remove trailing comma
+#endif;
 
-    $enabled = substr($enabled, 0, -1); // remove trailing comma
-endif;
+$enabled = $g_plugins;
 
-//echlog("debug", "DB test connection " . $db_host . ', ' . $db_user . ', ' . $db_pw . ', ' . $db_name);
+#echlog("debug", "DB test connection " . $db_host . ', ' . $db_user . ', ' . $db_pw . ', ' . $db_name);
 ## Check that the DB information supplied will make a connection to the B3 database.
-$db_test = @new mysqli($db_host, $db_user, $db_pw, $db_name);
+$db_test = new mysqli($db_host, $db_user, $db_pw, $db_name);
 
 if(($change_db_pw == true) && ($db_test->connect_error)) { // send back with a failed connection message
     sendBack('<strong>Database Connection Error</strong>

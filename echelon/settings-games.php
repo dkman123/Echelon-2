@@ -139,8 +139,8 @@ if($is_add) : ?>
 
 <div class="card-body">
 
-<form action="actions/settings-game.php" method="post">
-
+<form id="frm" action="actions/settings-game.php" method="post">
+    
     <h6>Names</h6>
     <div class="col justify-center">
         <div class="form-group row">
@@ -180,7 +180,7 @@ if($is_add) : ?>
 
         <div class="form-group row" id="change-pw-box">                
             <label class="col-sm-4 col-form-label" for="db-pw">DB Password</label>
-            <div class="col-sm-8"><input class="form-control" type="password" name="db-pw" id="db-pw"></div>
+            <div class="col-sm-8"><input class="form-control" type="password" name="db-pw" id="db-pw" value="<?php echo $game_db_pw; ?>"></div>
         </div>
     </div>
 
@@ -192,19 +192,17 @@ if($is_add) : ?>
             foreach(glob(getenv("DOCUMENT_ROOT").PATH.'lib/plugins/*') as $name) :
 
                 $name = basename($name);
-
-                if(!empty($plugins_enabled)) :
+                $check = '';
+                
+                if(!empty($plugins_enabled)) {
                         if(in_array($name, $plugins_enabled)) {
                             $check = 'checked="checked" ';
                         }
-                        else {
-                            $check = '';
-                        }
-
-                else:
+                }
+                else {
                     ## we need this now because it is not in the inc because of no active plugins
                     require_once 'classes/plugins-class.php'; // require the plugins base class
-                endif;
+                }
 
                 $file = getenv("DOCUMENT_ROOT").PATH.'lib/plugins/'.$name.'/class.php'; // abolsute path - needed because this page is include in all levels of this site
                 if(file_exists($file)) {
@@ -215,8 +213,13 @@ if($is_add) : ?>
                     $title = $name;
                 }
 
-                echo '<div class="form-group row"><label class="col-sm-4" for="'. $name .'">'. $title .'</label><div class="col"><label class="my-1 switch"><input id="'. $name .'" type="checkbox" name="plugins[]" value="'. $name .'" '. $check .'/>
-                    <span class="slider round"></span></label></div></div>';	
+                echo '<div class="form-group row">'
+                    . '<label class="col-sm-4" for="'. $name .'">'. $title .'</label>'
+                    . '<div class="col">'
+                    . '<label class="my-1 switch">'
+                    . '<input id="'. $name .'" type="checkbox" name="plugins" value="'. $name .'" '. $check .'/>'
+                    . '<span class="slider round"></span>'
+                    . '</label></div></div>';	
 
             endforeach; 
         ?>
@@ -235,11 +238,29 @@ if($is_add) : ?>
     <input type="hidden" name="type" value="edit" />
     <input type="hidden" name="token" value="<?php echo $game_token; ?>" />
     <input type="hidden" name="game" value="<?php echo $game; ?>" />
-    <button class="btn btn-primary float-right" type="submit" name="game-settings-sub" value="Game Settings">Save Settings</button>
+    <input type="hidden" id="active-plugins" name="active-plugins" value="" />
+    <input type="hidden" name="game-settings-sub" value="game-settings-sub" />
+    <button class="btn btn-primary float-right" type="button" onclick="doGo()" name="game-settings-sub" value="Game Settings">Save Settings</button>
 
 </form>
 </div></div></div>     
 
+<script type="text/javascript">
+    function doGo() {
+        var str = "";
+        $("input[name*='plugins']").each(function(){
+            if ($(this).is(':checked')) {
+                str = str + "," + $(this).val();
+            }
+        });
+        if (str === "") {
+            str = ",";
+        }
+        $("#active-plugins").val(str.substr(1));
+        console.log($("#active-plugins").val());
+        $("#frm").submit();
+    }
+</script>
 
 <?php endif;
 

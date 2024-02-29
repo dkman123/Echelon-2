@@ -657,7 +657,7 @@ function recordNumber($start_row, $max_rows, $total_rows) {
 }
 
 function queryStringPage() {
-
+    $query_string = "";
     if (!empty(filter_input(INPUT_SERVER, 'QUERY_STRING'))) {
 
         $params = explode("&", filter_input(INPUT_SERVER, 'QUERY_STRING'));
@@ -673,9 +673,7 @@ function queryStringPage() {
             $query_string = "&" . implode("&", $newParams);
         }
 
-    } else {
-        $query_string = "";
-    }
+    } 
 
     /// DEBUG
     //echlog('warning', "QUERY_STRING " . filter_input(INPUT_SERVER, 'QUERY_STRING'));
