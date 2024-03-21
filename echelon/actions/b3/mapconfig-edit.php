@@ -20,7 +20,7 @@ $g_friendlyfire = cleanvar(filter_input(INPUT_POST, 'g_friendlyfire'));
 $timelimit = cleanvar(filter_input(INPUT_POST, 'timelimit'));
 
 
-if(isset(filter_input(INPUT_POST, 'startmessage'))) {
+if(filter_input(INPUT_POST, 'startmessage')) {
     $startmessage = cleanvar(filter_input(INPUT_POST, 'startmessage'));
 }
 if($startmessage == null) {
