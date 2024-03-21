@@ -61,7 +61,6 @@ if($db_pw_cng == 'on') {
 else {
     $change_db_pw = false;
 }
-
 	
 ## Check for empty vars ##
 emptyInput($name, 'game name');

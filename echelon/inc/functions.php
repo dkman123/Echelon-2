@@ -673,7 +673,7 @@ function queryStringPage() {
             $query_string = "&" . implode("&", $newParams);
         }
 
-    } 
+    }
 
     /// DEBUG
     //echlog('warning', "QUERY_STRING " . filter_input(INPUT_SERVER, 'QUERY_STRING'));
