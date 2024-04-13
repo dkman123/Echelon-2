@@ -358,7 +358,7 @@ require 'inc/header.php';
                         </div>
                         <input type="hidden" name="token" value="<?php echo $comment_token; ?>" />
                         <input type="hidden" name="cid" value="<?php echo $cid; ?>" />
-                        <button class="btn btn-primary float-right my-1" type="submit" name="comment-sub">Add Comment</button>
+                        <button class="btn btn-primary float-right my-1" type="submit" name="comment-sub" value="comment">Add Comment</button>
                     </form>
                 </div>
             </div>
