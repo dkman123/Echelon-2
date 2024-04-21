@@ -1,5 +1,6 @@
 <?php
 $auth_name = 'edit_user';
+$b3_conn = true; // this page needs to connect to the B3 database
 require '../inc.php';
 
 if(filter_input(INPUT_POST, 't') == 'del') : // delete user
@@ -52,6 +53,7 @@ elseif(filter_input(INPUT_POST, 'ad-edit-user')): // admin edit user
         ifTokenBad('Edit Echelon User');
     }
 
+//echlog("debug", "User-Edit " . $id . ', ' . $username . ', ' . $display . ', ' . $email . ', ' . $group . ', ' . $resetpassword);
     $result = $dbl->editUser($id, $username, $display, $email, $group, $resetpassword);
 
     if($result) {

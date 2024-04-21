@@ -4,11 +4,12 @@
 #set_error_handler("var_dump");
 
 $auth_name = 'add_user';
+$b3_conn = true; // this page needs to connect to the B3 database
 require '../inc.php';
 
 ## if form is submitted ##	
-if(!isset(filter_input(INPUT_POST, 'add-user'))) { // if this was not a post request then send back with error 
-sendBack('Please do not access that page directly');
+if(!filter_input(INPUT_POST, 'add-user')) { // if this was not a post request then send back with error 
+    sendBack('Please do not access that page directly');
 }
 
 ## check that the sent form token is corret
@@ -27,7 +28,7 @@ if(!filter_var($email,FILTER_VALIDATE_EMAIL)) {
 }
 
 // Create a unique key for the user
-$text = $admin_id.$email.uniqid(microtime(), true).$group; // take sent data and some random data to create a random string
+$text = $email . uniqid(microtime(), true) . $group; // take sent data and some random data to create a random string
 $rand_text = str_shuffle($text); // shuffle the string to make more random
 $user_key = genHash($rand_text); // hash the random string to get the user hash
 
@@ -36,8 +37,8 @@ $body = '<html><body>';
 $body .= '<h2>Echelon User Key</h2>';
 $body .= $config['cosmos']['email_header'];
 $body .= 'This is the key you will need to use to register on Echelon. 
-    <a href="http://'.filter_input(INPUT_SERVER, 'SERVER_NAME').PATH.'register.php?key='.$user_key.'&amp;email='.$email.'">Register here</a>.<br />';
-$body .= 'Registration Key: '.$user_key . '<br />';
+    <a href="http://' . filter_input(INPUT_SERVER, 'SERVER_NAME') . PATH . 'register.php?key=' . $user_key . '&amp;email=' . $email . '">Register here</a>.<br />';
+$body .= 'Registration Key: ' . $user_key . '<br />';
 $body .= $config['cosmos']['email_footer'];
 $body .= '</body></html>';
 
@@ -62,14 +63,18 @@ $mgr->subject($subject);
 $mgr->msg($body);
 //$mgr->extra_headers($headers);
 $mgr->anti_abuse_headers();
+//echlog("debug", "User-Add email_config " .print_r($email_config));
+//var_dump($email_config);
 $mgr->setconfigvalues($email_config);
 //$mgr->set_mail_priority();
 try {
+//echlog("debug", "User-Add email " . $email . ', ' . $email_config['board_email'] . ', ' . $subject . ', ' . $body);
     $mgr->send();
 } catch(Exception $e) {
     sendBack('Caught Exception: ', $e->getMessage(), ".");
 }
 
+//echlog("debug", "User-Add " . $user_key . ', ' . $email . ', ' . $comment . ', ' . $group . ', ' . $mem->id);
 ## run query to add key to the DB ##
 $add_user = $dbl->addEchKey($user_key, $email, $comment, $group, $mem->id);
 if(!$add_user) {
@@ -78,4 +83,4 @@ if(!$add_user) {
 
 // all good send back good message
 #sendGood('Key Setup and Email has been sent to user');
-sendGood('Send this link to user: "http://'.filter_input(INPUT_SERVER, 'SERVER_NAME').PATH.'register.php?key='.$user_key.'&amp;email='.$email.'"');
+sendGood('Send this link to user: "http://' . filter_input(INPUT_SERVER, 'SERVER_NAME') . PATH . 'register.php?key=' . $user_key . '&amp;email=' . $email . '"');

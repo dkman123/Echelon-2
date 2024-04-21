@@ -22,8 +22,10 @@ require_once 'inc/setup.php'; // class to preform all DB related actions
 
 ## *** YOU SHOULD REQUIRE SSL ##
 ## If SSL required die if not an ssl connection ##
+# comes from inc/setup.php (which reads from DB)
 if($https_enabled == 1) :
     if(!detectSSL() && !isError()) { // if this is not an SSL secured page and this is not the error page
+        //echlog("debug", "inc https_enabled = " . $https_enabled);
         sendError('ssl');
         exit;
     }
@@ -100,10 +102,21 @@ if($auth_user_here != false) { // some pages do not need auth but include this f
 
 ## remove tokens from 2 pages ago to stop build up
 if(!isLogin()) : // stop login page from using this and moving the vars
+    //echlog("debug", "inc " . print_r($_SESSION['tokens']));
+    if (!isset($_SESSION['tokens'])) {
+        var_dump($_SESSION['tokens']);
+        $_SESSION['tokens'] = array("bad" => "");
+    }
     $tokens = array();
 
     $num_tokens = 0;
-    if (!is_null($_SESSION['tokens'])) { $num_tokens = count($_SESSION['tokens']); }
+    try {
+        if (!is_null($_SESSION['tokens'])) { 
+            $num_tokens = count($_SESSION['tokens']); 
+        }
+    } catch(Exception $ex) {
+        $num_tokens = 0;
+    }
 
     if($num_tokens > 0) :
         foreach($_SESSION['tokens'] as $key => $value) :

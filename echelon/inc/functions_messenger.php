@@ -271,6 +271,7 @@ class messenger
 //      $this->headers('X-AntiAbuse: Username - ' . mail_encode($user->data['username']));
 //      $this->headers('X-AntiAbuse: User IP - ' . $user->ip);
             
+        //var_dump($this->server_name);
         $this->headers('X-AntiAbuse: Board servername - ' . $this->server_name);
         $this->headers('X-AntiAbuse: User_id - ' . $this->userid);
         $this->headers('X-AntiAbuse: Username - ' . $this->username);
