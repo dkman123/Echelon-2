@@ -209,7 +209,7 @@ function unbanButton($pen_id, $cid, $type, $inactive) {
                     <input type="hidden" name="cid" value="'.$cid.'" />
                     <input type="hidden" name="banid" value="'.$pen_id.'" />
                     <input type="hidden" name="type" value="'.$type.'" />
-                    <button style="padding: 0; border: none; background: none;" type="submit" value="Unban" name="unban-sub" title="De-Activate / Unban"><img src="images/delete.png"></button>
+                    <button style="padding: 0; border: none; background: none; cursor: pointer;" type="submit" value="Unban" name="unban-sub" title="De-Activate / Unban"><img src="images/delete.png"></button>
                 </form>';
     } else {
         return null;
@@ -227,7 +227,7 @@ function unbanButton($pen_id, $cid, $type, $inactive) {
  */
 function editBanButton($type, $pen_id, $inactive) {
     if( ($inactive == 0) && ($type == 'TempBan' || $type == 'Ban') ) { // if ban is active and the penalty is a Ban or Tempban show link
-        return '<a onclick="editBanBox(this)" rel="'.$pen_id.'" class="edit-ban" title="Edit ban id &ldquo;'.$pen_id.'&rdquo;"><img src="images/edit.png" alt="[EB]" /></a>';
+        return '<a onclick="editBanBox(this)" rel="'.$pen_id.'" class="edit-ban" style="cursor: pointer;" title="Edit ban id &ldquo;'.$pen_id.'&rdquo;"><img src="images/edit.png" alt="[EB]" /></a>';
     } else { // else show nothing
         return NULL;
     }

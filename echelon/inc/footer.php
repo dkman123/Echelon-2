@@ -26,7 +26,7 @@ if($pagination && !$db->error) : // check to see if pagination is required on th
                     <li class="page-item"><a href="<?php printf("%25s?p=%d%s", $this_page, max(0, $page_no - 1), $query_string_page); ?>" class="page-link"><?php echo $page_no; ?></a></li>
                 <?php } ?>
 
-                                    <li class="page-item active"><a class="page-link"><?php echo $page_no + 1; ?></a></li>
+                    <li class="page-item active"><a class="page-link"><?php echo $page_no + 1; ?></a></li>
 
                 <?php if($page_no + 2 < $total_pages) { ?>								
                     <li class="page-item"><a href="<?php printf("%25s?p=%d%s", $this_page, max(0, $page_no + 1), $query_string_page); ?>" class="page-link"><?php echo $page_no + 2; ?></a></li>
@@ -95,7 +95,7 @@ endif; // end if pagination is on
 <?php } ?>
 
 <?php if(isCD()) : ?>
-	<script src="js/jquery.colorbox-min.js" charset="utf-8"></script>
+	<!-- <script src="js/jquery.colorbox-min.js" charset="utf-8"></script> -->
 	<script src="js/cd.js" charset="utf-8"></script>
 	<script charset="utf-8">
             /*$('#level-pw').hide();
