@@ -157,7 +157,14 @@ elseif($page_type == 'add') : ?>
                 <div class="col-sm-8">
                 <input class="form-control" type="password" name="rcon-pass" id="-rcon-pass"/>
                 </div>
-            </div>    							
+            </div>
+            
+            <div class="form-group row">
+            <label class="col-sm-4 col-form-label" for="rcon-pass">Mapcycle File</label>
+                <div class="col-sm-8">
+                <input class="form-control" type="text" name="mapcyclefile" id="mapcyclefile"/>
+                </div>
+            </div>  
         </div>
 	
         <input type="hidden" name="type" value="add" />
@@ -237,7 +244,14 @@ elseif($page_type == 'srv') : /* if edit server page */ ?>
                 <div class="col-sm-8">
                     <input class="form-control" type="password" name="rcon-pass" id="-rcon-pass" />
                 </div>
-            </div>    							
+            </div>
+            
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label" for="mapcyclefile">Mapcycle File</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" name="mapcyclefile" id="mapcyclefile" value="<?php echo $server['mapcyclefile']; ?>" />
+                </div>
+            </div>    	  							
         </div>
         <input type="hidden" name="type" value="edit" />
         <input type="hidden" name="token" value="<?php echo $token; ?>" />

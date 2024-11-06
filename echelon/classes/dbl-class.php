@@ -315,10 +315,12 @@ class DbL {
         $query .= " WHERE id = ? LIMIT 1";
 
         $stmt = $this->mysql->prepare($query) or die('Database Error');
-        if($change_db_pw) // if change DB PW append var
-                $stmt->bind_param('sssssssi', $name, $name_short, $db_host, $db_user, $db_name, $plugins, $db_pw, $game);
-        else // else var info not needed in bind_param
-                $stmt->bind_param('ssssssi', $name, $name_short, $db_host, $db_user, $db_name, $plugins, $game);
+        if($change_db_pw) { // if change DB PW append var
+            $stmt->bind_param('sssssssi', $name, $name_short, $db_host, $db_user, $db_name, $plugins, $db_pw, $game);
+        }
+        else { // else var info not needed in bind_param
+            $stmt->bind_param('ssssssi', $name, $name_short, $db_host, $db_user, $db_name, $plugins, $game);
+        }
         $stmt->execute();
 
         if($stmt->affected_rows > 0) {
@@ -364,11 +366,11 @@ class DbL {
     }
 	
     function getServers($cur_game) {
-        $query = "SELECT id, name, ip, pb_active, rcon_pass, rcon_ip, rcon_port FROM ech_servers WHERE game = ?";
+        $query = "SELECT id, name, ip, pb_active, rcon_pass, rcon_ip, rcon_port, mapcyclefile FROM ech_servers WHERE game = ?";
         $stmt = $this->mysql->prepare($query) or die('Database Error');
         $stmt->bind_param('i', $cur_game);
         $stmt->execute();
-        $stmt->bind_result($id, $name, $ip, $pb_active, $rcon_pass, $rcon_ip, $rcon_port); // bind results into vars
+        $stmt->bind_result($id, $name, $ip, $pb_active, $rcon_pass, $rcon_ip, $rcon_port, $mapcyclefile); // bind results into vars
 
         while($stmt->fetch()) : // get results and store in an array
             $servers[] = array(
@@ -378,7 +380,8 @@ class DbL {
                 'pb_active' => $pb_active,
                 'rcon_pass' => $rcon_pass,
                 'rcon_ip' => $rcon_ip,
-                'rcon_port' => $rcon_port
+                'rcon_port' => $rcon_port,
+                'mapcyclefile' => $mapcyclefile            
             );
         endwhile;
 
@@ -387,11 +390,11 @@ class DbL {
     }
 	
     function getServer($id) {
-        $query = "SELECT game, name, ip, pb_active, rcon_pass, rcon_ip, rcon_port FROM ech_servers WHERE id = ?";
+        $query = "SELECT game, name, ip, pb_active, rcon_pass, rcon_ip, rcon_port, mapcyclefile FROM ech_servers WHERE id = ?";
         $stmt = $this->mysql->prepare($query) or die('Database Error');
         $stmt->bind_param('i', $id);
         $stmt->execute();
-        $stmt->bind_result($game, $name, $ip, $pb_active, $rcon_pass, $rcon_ip, $rcon_port); // bind results into vars
+        $stmt->bind_result($game, $name, $ip, $pb_active, $rcon_pass, $rcon_ip, $rcon_port, $mapcyclefile); // bind results into vars
 
         while($stmt->fetch()) : // get results and store in an array
             $server = array(
@@ -401,7 +404,8 @@ class DbL {
                 'pb_active' => $pb_active,
                 'rcon_pass' => $rcon_pass,
                 'rcon_ip' => $rcon_ip,
-                'rcon_port' => $rcon_port
+                'rcon_port' => $rcon_port,
+                'mapcyclefile' => $mapcyclefile
             );
         endwhile;
 
@@ -447,9 +451,9 @@ class DbL {
      *
      * @return bool
      */
-    function setServerSettings($server_id, $name, $ip, $pb, $rcon_ip, $rcon_port, $rcon_pw, $change_rcon_pw) {
+    function setServerSettings($server_id, $name, $ip, $pb, $rcon_ip, $rcon_port, $mapcyclefile, $rcon_pw, $change_rcon_pw) {
 		
-        $query = "UPDATE ech_servers SET name = ?, ip = ?, pb_active = ?, rcon_ip = ?, rcon_port = ?";
+        $query = "UPDATE ech_servers SET name = ?, ip = ?, pb_active = ?, rcon_ip = ?, rcon_port = ?, mapcyclefile = ?";
 
         if($change_rcon_pw) { // if the DB password is to be chnaged
             $query .= ", rcon_pass = ?";
@@ -459,10 +463,10 @@ class DbL {
 
         $stmt = $this->mysql->prepare($query) or die('Database Error');
         if($change_rcon_pw) { // if change RCON PW append
-            $stmt->bind_param('ssisisi', $name, $ip, $pb, $rcon_ip, $rcon_port, $rcon_pw, $server_id);
+            $stmt->bind_param('ssisissi', $name, $ip, $pb, $rcon_ip, $rcon_port, $mapcyclefile, $rcon_pw, $server_id);
         }
         else { // else info not needed in bind_param
-            $stmt->bind_param('ssisii', $name, $ip, $pb, $rcon_ip, $rcon_port, $server_id);
+            $stmt->bind_param('ssisisi', $name, $ip, $pb, $rcon_ip, $rcon_port, $mapcyclefile, $server_id);
         }
         $stmt->execute();
 
@@ -479,13 +483,13 @@ class DbL {
      *
      * @return bool
      */
-    function addServer($game_id, $name, $ip, $pb, $rcon_ip, $rcon_port, $rcon_pw) {
+    function addServer($game_id, $name, $ip, $pb, $rcon_ip, $rcon_port, $mapcyclefile, $rcon_pw) {
 		
         // id, game, name, ip, pb_active, rcon_pass, rcon_ip, rcon_port
-        $query = "INSERT INTO ech_servers VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO ech_servers VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->mysql->prepare($query) or die('Database Error');
-        $stmt->bind_param('ississi', $game_id, $name, $ip, $pb, $rcon_pw, $rcon_ip, $rcon_port);
+        $stmt->bind_param('ississis', $game_id, $name, $ip, $pb, $rcon_pw, $rcon_ip, $rcon_port, $mapcyclefile);
         $stmt->execute();
 
         $affect = $stmt->affected_rows;
@@ -505,9 +509,9 @@ class DbL {
      * @param int $game_id - the id of the game that is to be updated
      */
     function addServerUpdateGames($game_id) {
-        $query = "UPDATE ech_games SET num_srvs = (num_srvs + 1) WHERE id = ? LIMIT 1";
-        $stmt = $this->mysql->prepare($query) or die('Database Error:'. $this->mysql->error);;
-        $stmt->bind_param('i', $game_id);
+        $query = "UPDATE ech_games SET num_srvs = (select count(*) from ech_servers where game = ?) WHERE id = ? LIMIT 1";
+        $stmt = $this->mysql->prepare($query) or die('Database Error:'. $this->mysql->error);
+        $stmt->bind_param('ii', $game_id, $game_id);
         $stmt->execute();
 
         $affect = $stmt->affected_rows;
@@ -522,9 +526,9 @@ class DbL {
     }
 
     function delServerUpdateGames($game_id) {
-        $query = "UPDATE ech_games SET num_srvs = (num_srvs - 1) WHERE id = ? LIMIT 1";
-        $stmt = $this->mysql->prepare($query) or die('Database Error:'. $this->mysql->error);;
-        $stmt->bind_param('i', $game_id);
+        $query = "UPDATE ech_games SET num_srvs = (select count(*) from ech_servers where game = ?) WHERE id = ? LIMIT 1";
+        $stmt = $this->mysql->prepare($query) or die('Database Error:'. $this->mysql->error);
+        $stmt->bind_param('ii', $game_id, $game_id);
         $stmt->execute();
 
         $affect = $stmt->affected_rows;
