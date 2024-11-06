@@ -120,6 +120,9 @@ input:checked+.slider:before{
 .odd {
     background-color: #ccc;
 }
+.disabled {
+    background-color: lightyellow;
+}
 
 @media (min-width: 1200px) {
     .container-wide {

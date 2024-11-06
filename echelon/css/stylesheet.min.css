@@ -111,6 +111,9 @@ input:checked+.slider:before{
     word-break: break-all;
     white-space: normal;
 }
+.disabled {
+    background-color: lightyellow;
+}
 @media (min-width: 1200px) {
     .container-wide {
       max-width: 1640px;

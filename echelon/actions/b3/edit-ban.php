@@ -3,21 +3,22 @@ $auth_name = 'edit_ban';
 $b3_conn = true; // this page needs to connect to the B3 database
 require '../../inc.php';
 
-if(!filter_input(INPUT_POST, 'eb-sub')) { // if the form not is submitted
+if(!filter_input(INPUT_POST, 'eb-sub')) { // if the form was is not submitted
     set_error('Please do not call that page directly, thank you.');
     send('../../index.php');
 }
 
 ## check that the sent form token is corret
-if(verifyFormToken('editban', $tokens) == false) { // verify token
-    ifTokenBad('Edit ban');
-}
+//if(verifyFormToken('editban', $tokens) == false) { // verify token
+//    ifTokenBad('Edit ban');
+//}
 	
-$ban_id = cleanvar(filter_input(INPUT_POST, 'banid'));
+$pen_id = cleanvar(filter_input(INPUT_POST, 'pen_id'));
 $pbid = cleanvar(filter_input(INPUT_POST, 'pbid'));
 $pb_ban = cleanvar(filter_input(INPUT_POST, 'pb'));
 $reason = cleanvar(filter_input(INPUT_POST, 'reason'));
-$cid = cleanvar(filter_input(INPUT_POST, 'cid'));
+$cid = cleanvar(filter_input(INPUT_POST, 'client_id'));
+$inactive = cleanvar(filter_input(INPUT_POST, 'inactive'));
 if($pb_ban == 'on') {
     $is_pb_ban = true;
     $type = 'Ban';
@@ -26,13 +27,15 @@ if($pb_ban == 'on') {
 } else {
     $is_pb_ban = false;
     $type = 'TempBan';
-    $duration_form = cleanvar(filter_input(INPUT_POST, 'duration'));
+    // duration_num is the number component of the penalty duration (20m is 20 minutes, duration_num = 20, time = m)
+    $duration_num = cleanvar(filter_input(INPUT_POST, 'duration'));
+    // time is the letter "block" (ex: h = hours) see functions.php penDuration
     $time = cleanvar(filter_input(INPUT_POST, 'time'));
     emptyInput($time, 'time frame');
-    emptyInput($duration_form, 'penalty duration');
+    emptyInput($duration_num, 'penalty duration');
 
     // NOTE: the duration in the DB is done in MINUTES and the time_expire is written in unix timestamp (in seconds)
-    $duration = penDuration($time, $duration_form);
+    $duration = penDuration($time, $duration_num);
 
     $duration_secs = $duration*60; // find the duration in seconds
 
@@ -42,14 +45,15 @@ if($pb_ban == 'on') {
 // check for empty reason
 emptyInput($reason, 'ban reason');
 
-if( !isID($ban_id) || !isID($cid) ) {
+if( !isID($pen_id) || !isID($cid) ) {
+    echlog("debug", "Edit-Ban invalid info for cid=" . $cid . "; pen_id=" . $pen_id);
     sendBack('Some of the information sent by you is invalid, the ban was not edited');
 }
 
 ## Query Section ##
 $query = "UPDATE penalties SET type = ?, duration = ?, time_edit = UNIX_TIMESTAMP(), time_expire = ?, reason = ? WHERE id = ? LIMIT 1";
 $stmt = $db->mysql->prepare($query) or die('DB Error');
-$stmt->bind_param('siisi', $type, $duration, $time_expire, $reason, $ban_id);
+$stmt->bind_param('siisi', $type, $duration, $time_expire, $reason, $pen_id);
 $stmt->execute();
 
 if($stmt->affected_rows > 0) {
@@ -60,9 +64,9 @@ else {
 }
 
 ## If a permaban send unban rcon command (the ban will still be enforced then by the B3 DB ##
-if($type == 'Ban') :
+if($type == 'Ban'  && $inactive == "1" && $pbid != "") :
 	
-    ## Loop thro server for this game and send unban command and update ban file
+    ## Loop through servers for this game and send unban command and update ban file
     $i = 1;
     while($i <= $game_num_srvs) :
 
@@ -98,4 +102,10 @@ else {
     sendBack('NO!');
 }
 
-exit;
+echlog("debug", "Edit-Ban " . $cid);
+//if ($cid > 0) {
+//    send('../../clientdetails.php?id=' . $cid);
+//}
+
+send('../../index.php');
+//exit;

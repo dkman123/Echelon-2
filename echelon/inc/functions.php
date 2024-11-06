@@ -227,7 +227,7 @@ function unbanButton($pen_id, $cid, $type, $inactive) {
  */
 function editBanButton($type, $pen_id, $inactive) {
     if( ($inactive == 0) && ($type == 'TempBan' || $type == 'Ban') ) { // if ban is active and the penalty is a Ban or Tempban show link
-        return '<a onclick="editBanBox(this)" rel="'.$pen_id.'" class="edit-ban" style="cursor: pointer;" title="Edit ban id &ldquo;'.$pen_id.'&rdquo;"><img src="images/edit.png" alt="[EB]" /></a>';
+        return '<a href="editban.php?penid=' . $pen_id . '" class="edit-ban" style="cursor: pointer;" title="Edit ban id &ldquo;' . $pen_id . '&rdquo;"><img src="images/edit.png" alt="[EB]" /></a>';
     } else { // else show nothing
         return NULL;
     }

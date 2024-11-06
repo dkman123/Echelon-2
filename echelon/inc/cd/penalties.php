@@ -60,7 +60,7 @@ if($stmt->num_rows) : // if results exist
                     $unban = '';
                 }
 			
-		if($mem->reqLevel('edit_ban')) { // if user  has access to edit bans show the button
+		if($mem->reqLevel('edit_ban')) { // if user has access to edit bans show the button
                     $edit_ban = editBanButton($type, $pid, $inactive);
                 }
 		else {

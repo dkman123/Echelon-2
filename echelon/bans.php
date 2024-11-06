@@ -43,7 +43,7 @@ if(!in_array($orderby, $allowed_orderby)) { // Check if the sent varible is in t
 ## Page Vars ##
 $page_no = 0;
 if (filter_input(INPUT_GET, 'p')) {
-    $page_no = addslashes($_GET['p']);
+    $page_no = addslashes(filter_input(INPUT_GET, 'p'));
 }
 
 $start_row = $page_no * $limit_rows;
@@ -54,7 +54,7 @@ $start_row = $page_no * $limit_rows;
 if($type_admin) {
     // admin bans
     //$query = "SELECT p.type, p.time_add, p.time_expire, p.reason, p.duration, target.id as client_id, target.name as client_name, c.id as admins_id, c.name as admins_name FROM penalties p, clients c, clients as target WHERE admin_id != '0' AND (p.type = 'Ban' OR p.type = 'TempBan') AND inactive = 0 AND p.time_expire <> 0 AND p.client_id = target.id AND p.admin_id = c.id";
-    $query = "SELECT p.type, p.time_add, p.time_expire, p.reason, '' AS data, p.duration, target.id as client_id, target.name as client_name, target.ip as client_ip, c.id as admins_id, c.name as admins_name FROM penalties p, clients c, clients as target WHERE admin_id != '0' AND p.type != 'Warning' AND inactive = 0 AND p.time_expire <> 0 AND p.client_id = target.id AND p.admin_id = c.id";
+    $query = "SELECT p.type, p.time_add, p.time_expire, p.reason, '' AS data, p.duration, target.id as client_id, target.name as client_name, target.ip as client_ip, c.id as admins_id, c.name as admins_name FROM penalties p, clients c, clients as target WHERE admin_id != '0' AND p.type != 'Warning' AND p.type != 'Kick' AND inactive = 0 AND p.time_expire <> 0 AND p.client_id = target.id AND p.admin_id = c.id";
 }
 else {
     // b3 bans
@@ -203,7 +203,7 @@ EOD;
         $no_data = false;
     } else {
         $no_data = true;
-        if($type_admin) { // slight chnages between different page types
+        if($type_admin) { // slight changes between different page types
             echo '<tr class="odd"><td colspan="7">There no tempbans or bans made by admins in the database</td></tr>';
         }
         else {
