@@ -103,6 +103,7 @@ if(!empty($servers) && $page != 'banlist') :
         $config['game']['servers'][$i]['rcon_pass'] = $server['rcon_pass'];
         $config['game']['servers'][$i]['rcon_ip'] = $server['rcon_ip'];
         $config['game']['servers'][$i]['rcon_port'] = $server['rcon_port'];
+        $config['game']['servers'][$i]['mapcyclefile'] = $server['mapcyclefile'];
 
         $i++; // increment counter
     endforeach;

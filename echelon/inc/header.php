@@ -23,8 +23,8 @@ if($b3_conn && $query_normal && (!$db_error)) :
 
     $num_rows = $results['num_rows']; // the the num_rows
     /// DEBUG
-    echlog('warning', $query_limit);
-    echlog('warning', $page_title . ' got back rows: ' . $num_rows);
+    //echlog('warning', $query_limit);
+    //echlog('warning', $page_title . ' got back rows: ' . $num_rows);
     $data_set = $results['data']; // seperate out the return data set
 endif;
 

@@ -148,21 +148,21 @@ elseif($page_type == 'add') : ?>
             <div class="form-group row">
             <label class="col-sm-4 col-form-label" for="rcon-port">RCON Port</label>
                 <div class="col-sm-8">
-                <input class="form-control" type="text" class="int" name="rcon-port" id="rcon-port">
+                    <input class="form-control" type="text" class="int" name="rcon-port" id="rcon-port">
                 </div>
             </div>        
             
             <div id="change-pw-box" class="form-group row">
             <label class="col-sm-4 col-form-label" for="rcon-pass">RCON Password</label>
                 <div class="col-sm-8">
-                <input class="form-control" type="password" name="rcon-pass" id="-rcon-pass"/>
+                    <input class="form-control" type="password" name="rcon-pass" id="-rcon-pass"/>
                 </div>
             </div>
             
             <div class="form-group row">
             <label class="col-sm-4 col-form-label" for="rcon-pass">Mapcycle File</label>
                 <div class="col-sm-8">
-                <input class="form-control" type="text" name="mapcyclefile" id="mapcyclefile"/>
+                    <input class="form-control" type="text" name="mapcyclefile" id="mapcyclefile" maxlength="255" />
                 </div>
             </div>  
         </div>
@@ -249,7 +249,7 @@ elseif($page_type == 'srv') : /* if edit server page */ ?>
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label" for="mapcyclefile">Mapcycle File</label>
                 <div class="col-sm-8">
-                    <input class="form-control" type="text" name="mapcyclefile" id="mapcyclefile" value="<?php echo $server['mapcyclefile']; ?>" />
+                    <input class="form-control" type="text" name="mapcyclefile" id="mapcyclefile" value="<?php echo $server['mapcyclefile']; ?>" maxlength="255" />
                 </div>
             </div>    	  							
         </div>

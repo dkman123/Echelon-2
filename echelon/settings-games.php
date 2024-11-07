@@ -6,6 +6,12 @@ $b3_conn = false; // this page needs to connect to the B3 database
 $pagination = false; // this page requires the pagination part of the footer
 require 'inc.php';
 
+// if you get errors about chats_table_3 in /lib/plugins/chatlogs/class.php
+// (where 3 is the game ID number)
+// get into mysql and run:
+//  insert into ech_config (name, value) select 'chats_table_3', 'chatlog';
+//  insert into ech_config (name, value) select 'chats_names_3', 'ChatLog 3';
+
 if (!isset($no_games)){
     $no_games = false;
 }
