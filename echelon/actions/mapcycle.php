@@ -7,19 +7,17 @@ $pagination = false; // this page requires the pagination part of the footer
 $query_normal = true;
 require '../inc.php';
 
-/// TODO: move to config (then moved to server settings in db)
-#$mapcycleFile = "../../echelonv1/files/mapcycle.txt";
-
-$servers = $dbl->getServers($game);
+if (!isset($servers) || sizeof($servers) < 1) {
+    $servers = $dbl->getServers($game);
+}
 if(!empty($servers)) {
     $mapcycleFile = $servers[0]['mapcyclefile'];
 }
+else {
+    $mapcycleFile = "";
+}
 #echlog("debug", "Mapcycle File " . $mapcycleFile . " for Game ID " . $game);
 
-//$mapcycleFile = "";
-//if (filter_input(INPUT_POST, 'mapcyclefile')) {
-//    $mapcycleFile = (filter_input(INPUT_POST, 'mapcyclefile'));
-//}
 emptyInput($mapcycleFile, 'Map Cycle File in Server Settings');
 
 $data = "";

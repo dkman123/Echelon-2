@@ -77,6 +77,7 @@ $rcon_pw_cng = cleanvar(filter_input(INPUT_POST, 'cng-pw'));
 $rcon_pw = cleanvar(filter_input(INPUT_POST, 'rcon-pass'));
 $server_id = cleanvar(filter_input(INPUT_POST, 'server'));
 $mapcyclefile = cleanvar(filter_input(INPUT_POST, 'mapcyclefile'));
+$mapcycleurl = cleanvar(filter_input(INPUT_POST, 'mapcycleurl'));
 
 if($is_add) {
     $game_id = cleanvar(filter_input(INPUT_POST, 'game-id'));
@@ -131,11 +132,11 @@ endif;
 ## Update DB ##
 if($is_add) :
     //echlog("debug", "Adding Server" . $game_id . ', ' . $name . ', ' . $ip, $pb . ', ' . $rcon_ip . ', ' . $rcon_port . ', ' . $rcon_pw);
-    $result = $dbl->addServer($game_id, $name, $ip, $pb, $rcon_ip, $rcon_port, $mapcyclefile, $rcon_pw);
+    $result = $dbl->addServer($game_id, $name, $ip, $pb, $rcon_ip, $rcon_port, $mapcyclefile, $mapcycleurl, $rcon_pw);
     $dbl->addServerUpdateGames($game_id);
 else :
     //echlog("debug", "Updating Server" . $server_id . ', ' . $name . ', ' . $ip . ', ' . $pb . ', ' . $rcon_ip . ', ' . $rcon_port . ', "' . $mapcyclefile . '", ' . $rcon_pw . ', ' . $change_rcon_pw);
-    $result = $dbl->setServerSettings($server_id, $name, $ip, $pb, $rcon_ip, $rcon_port, $mapcyclefile, $rcon_pw, $change_rcon_pw); // update the settings in the DB
+    $result = $dbl->setServerSettings($server_id, $name, $ip, $pb, $rcon_ip, $rcon_port, $mapcyclefile, $mapcycleurl, $rcon_pw, $change_rcon_pw); // update the settings in the DB
 endif;
 
 if(!$result) {

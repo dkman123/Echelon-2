@@ -12,6 +12,16 @@ require 'inc.php';
 
 ######## Varibles ########
 
+if (!isset($servers) || sizeof($servers) < 1) {
+    $servers = $dbl->getServers($game);
+}
+if(!empty($servers)) {
+    $mapcycleURL = $servers[0]['mapcycleurl'];
+}
+else {
+    $mapcycleURL = "NO_MAPCYCLE_URL";
+}
+
 ## Sorts requests vars ##
 $orderby = "mapname";
 if(filter_input(INPUT_GET, 'ob')) {
@@ -258,7 +268,10 @@ EOD;
                     <input type="button" id="writefile" value="Write File" onclick="doWriteFile()" />
                 </th>
                 <th>
-                    <a href="/echelonv1/files/mapcycle.txt" target="_blank" style="color: #fff">Current mapcycle</a>
+                    <!-- Current mapcycle only works if the mapcycle URL is set in Server Settings -->
+                    <!--     AND the page is readable by the user the site runs as -->
+                    <!-- The file can be a symlink to the actual file (if the web server follows symlinks) -->
+                    <a href="<?php echo $mapcycleURL; ?>" target="_blank" style="color: #fff">Current mapcycle</a>
                 </th>
                 <th>
                     Map Cycle with config settings <input type="checkbox" id="cycleWithConfig" value="false" />
