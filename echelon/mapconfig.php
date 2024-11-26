@@ -12,6 +12,9 @@ require 'inc.php';
 
 ######## Varibles ########
 
+## number of rows to display in the mapcycle fixed-bottom section
+$mapcycleheight = 12;
+
 if (!isset($servers) || sizeof($servers) < 1) {
     $servers = $dbl->getServers($game);
 }
@@ -20,6 +23,12 @@ if(!empty($servers)) {
 }
 else {
     $mapcycleURL = "NO_MAPCYCLE_URL";
+}
+if(!empty($servers)) {
+    $mapcycleFile = $servers[0]['mapcyclefile'];
+}
+else {
+    $mapcycleFile = "";
 }
 
 ## Sorts requests vars ##
@@ -189,11 +198,6 @@ if(!$db->error) :
                 </th>
             </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <th colspan="6">Click map name to see details.</th>
-            </tr>
-        </tfoot>
         <tbody>
         <?php
         if($num_rows > 0) : // query contains stuff
@@ -256,34 +260,47 @@ EOD;
             echo '</td></tr>';
         endif; // no records
         ?>
-        </tbody>
-    </table>
-    <table width="100%">
-        <thead>
-            <tr style="background-color:#7a8456">  <!-- 406eb7 blue, 823a27 brown, 7a8456 yellow -->
-                <th>
-                    Create a mapcycle.txt
-                </th>
-                <th>
-                    <input type="button" id="writefile" value="Write File" onclick="doWriteFile()" />
-                </th>
-                <th>
-                    <!-- Current mapcycle only works if the mapcycle URL is set in Server Settings -->
-                    <!--     AND the page is readable by the user the site runs as -->
-                    <!-- The file can be a symlink to the actual file (if the web server follows symlinks) -->
-                    <a href="<?php echo $mapcycleURL; ?>" target="_blank" style="color: #fff">Current mapcycle</a>
-                </th>
-                <th>
-                    Map Cycle with config settings <input type="checkbox" id="cycleWithConfig" value="false" />
-                </th>
-            </tr>
-        </thead>
-        <tbody>
+            
             <tr>
-                <td colspan="6" id="mapcycle"></td>
+                <th colspan="6">Click map name to see details.</th>
+            </tr>
+            <!-- spacer for the map area fixed at the bottom -->
+            <tr>
+                <td style="height:<?php echo $mapcycleheight ?>rem">
+                    &nbsp;
+                </td>
             </tr>
         </tbody>
     </table>
+    <br />
+    <div id="mapcyclediv" class="fixedbottom">
+        <table width="100%">
+            <thead>
+                <tr style="background-color:#7a8456">  <!-- 406eb7 blue, 823a27 brown, 7a8456 yellow -->
+                    <th>
+                        <input type="button" id="loadcurrentcyclefile" value="Load File" onclick="doReadFile()" />
+                    </th>
+                    <th>
+                        <input type="button" id="writefile" value="Write File" onclick="doWriteFile()" />
+                    </th>
+                    <th>
+                        <!-- Current mapcycle only works if the mapcycle URL is set in Server Settings -->
+                        <!--     AND the page is readable by the user the site runs as -->
+                        <!-- The file can be a symlink to the actual file (if the web server follows symlinks) -->
+                        <a href="<?php echo $mapcycleURL; ?>" target="_blank" style="color: #fff">Current mapcycle</a>
+                    </th>
+                    <th>
+                        Map Cycle with config settings <input type="checkbox" id="cycleWithConfig" value="false" />
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="6"><textarea id="mapcycle" style="overflow-y: scroll; resize: none; height: <?php echo $mapcycleheight ?>rem; width: 100%"></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <form name="mapdetailsform" method="post" action="actions/b3/mapconfig-edit.php">
         <input type="hidden" name="t" value="del" />
@@ -310,19 +327,19 @@ function doAdd(rec){
     var text = $("#mapcycle").html();
     if($("#cycleWithConfig").is(':checked')) {
         text += $("#mn" + rec).text().trim()
-            + '<br />{'
-            + '<br />&nbsp;&nbsp;&nbsp;&nbsp;capturelimit "' + $("#cl" + rec).text().trim()
-            + '"<br />&nbsp;&nbsp;&nbsp;&nbsp;g_suddendeath "' + $("#sd" + rec).text().trim()
-            + '"<br />&nbsp;&nbsp;&nbsp;&nbsp;g_gear "' + $("#ge" + rec).text().trim()
-            + '"<br />&nbsp;&nbsp;&nbsp;&nbsp;g_gravity "' + $("#gr" + rec).text().trim()
-            + '"<br />&nbsp;&nbsp;&nbsp;&nbsp;g_friendlyfire "' + $("#ff" + rec).text().trim()
-            + '"<br />&nbsp;&nbsp;&nbsp;&nbsp;timelimit "' + $("#tl" + rec).text().trim()
-            + '"<br />}<br />';
+            + '\n{'
+            + '\n    capturelimit "' + $("#cl" + rec).text().trim()
+            + '"\n    g_suddendeath "' + $("#sd" + rec).text().trim()
+            + '"\n    g_gear "' + $("#ge" + rec).text().trim()
+            + '"\n    g_gravity "' + $("#gr" + rec).text().trim()
+            + '"\n    g_friendlyfire "' + $("#ff" + rec).text().trim()
+            + '"\n    timelimit "' + $("#tl" + rec).text().trim()
+            + '"\n}\n';
     }
     else {
-        text += $("#mn" + rec).text().trim() + '<br />';
+        text += $("#mn" + rec).text().trim() + '\n';
     }
-    $("#mapcycle").html(text);
+    $("#mapcycle").text(text);
     /// update the display for datelastadd
     var dt = new Date();
     var dtstr = dt.toISOString().split('T')[0];
@@ -366,11 +383,32 @@ function doWriteFile(){
     }
 }
 
+function doReadFile(){    
+    $.ajax({
+        url: "<?php echo $mapcycleURL ?>",
+        data: { },
+        type: 'POST',
+        success: function(data) {
+            // do nothing
+            $("#mapcycle").text(data);
+            //alert("updated datelastadd for id " + mid);
+            console.log("success");
+        },
+        //error: function(XMLHttprequest, textStatus, errorThrown) {
+        error: function(data) {
+            console.log("error reading current mapcycle file <?php echo $mapcycleURL ?>");
+            //console.log(textStatus, errorThrown);
+            //console.log(data);
+            alert("error reading current mapcycle file <?php echo $mapcycleURL ?>");
+        }
+    });
+}
 </script>
 <?php
     else:
 
     endif; // db error
 
-    require 'inc/footer.php'; 
+    # disabled the footer so the map area can be at the bottom. see stylesheet.css if you want the footer
+    #require 'inc/footer.php'; 
 ?>

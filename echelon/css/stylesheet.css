@@ -123,6 +123,17 @@ input:checked+.slider:before{
 .disabled {
     background-color: lightyellow;
 }
+.fixedbottom {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   /*background-color: red;*/
+   /*color: white;*/
+   text-align: center;
+   /* bottom padding needed if you want to include the footer.php */
+   /*padding-bottom: 2rem;*/
+}
 
 @media (min-width: 1200px) {
     .container-wide {
