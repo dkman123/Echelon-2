@@ -324,7 +324,10 @@ EOD;
 <script language="JavaScript">
     
 function doAdd(rec){
-    var text = $("#mapcycle").html();
+    var text = $("#mapcycle").val();
+    if (text !== "" && !text.endsWith('\n')) {
+        text += '\n';
+    }
     if($("#cycleWithConfig").is(':checked')) {
         text += $("#mn" + rec).text().trim()
             + '\n{'
@@ -339,7 +342,7 @@ function doAdd(rec){
     else {
         text += $("#mn" + rec).text().trim() + '\n';
     }
-    $("#mapcycle").text(text);
+    $("#mapcycle").val(text);
     /// update the display for datelastadd
     var dt = new Date();
     var dtstr = dt.toISOString().split('T')[0];
@@ -390,7 +393,7 @@ function doReadFile(){
         type: 'POST',
         success: function(data) {
             // do nothing
-            $("#mapcycle").text(data);
+            $("#mapcycle").val(data);
             //alert("updated datelastadd for id " + mid);
             console.log("success");
         },
