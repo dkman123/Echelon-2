@@ -379,7 +379,7 @@ function doDelete(id){
 }
 
 function doWriteFile(){
-    var text = $("#mapcycle").html();
+    var text = $("#mapcycle").val();
     if (text !== ""){
         document.forms["mapcycleform"].data.value = text;
         document.forms["mapcycleform"].submit();
