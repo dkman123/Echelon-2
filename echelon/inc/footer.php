@@ -73,22 +73,6 @@ endif; // end if pagination is on
     </div>
 </footer><!-- close #footer -->
 
-<!-- load jQuery off google CDN -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-
-<!-- load main site js 
-<script src="<#?php echo $path; ?>js/site.js" charset="utf-8"></script>
--->
-
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-<!-- Popper JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-
 <!-- page specific js -->
 <?php if(isMe()) { ?>
 	<script src="js/me.js" charset="utf-8"></script>
