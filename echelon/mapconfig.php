@@ -325,6 +325,12 @@ EOD;
     
 function doAdd(rec){
     var text = $("#mapcycle").val();
+    if (text !== "" && text.endsWith('\r\n\r\n')) {
+        text = text.slice(0, -2); 
+    }
+    if (text !== "" && text.endsWith('\n\n')) {
+        text = text.slice(0, -1); 
+    }
     if (text !== "" && !text.endsWith('\n')) {
         text += '\n';
     }
