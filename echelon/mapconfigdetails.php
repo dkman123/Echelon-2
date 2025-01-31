@@ -193,14 +193,14 @@ function isValidDate(dateString)
         
         <table style="width:90%; margin:5px">
             <tr>
-                <td style="text-align:left">NOTE: To add a new map just change the name/settings and click the Add button.
+                <td style="text-align:left">NOTE: To add a new map just change the name/settings and click the Save As button.
                     <br />It will add the new map, but refresh to the original map.</td>
                 <td style="text-align:right">
                     <button class="btn btn-primary my-2" type="button" onclick="goBack()">Go Back</button>
                     &nbsp; &nbsp; &nbsp; &nbsp;
                     <button id="mapconfig-edit-update" class="btn btn-primary my-2" value="Update" type="button" onclick="doUpdate()">Update</button>
                     &nbsp; &nbsp; &nbsp; &nbsp;
-                    <button id="mapconfig-edit-add" class="btn btn-primary my-2" value="Add" type="button" onclick="doAdd()">Add New Map</button>
+                    <button id="mapconfig-edit-add" class="btn btn-primary my-2" value="Add" type="button" onclick="doAdd()">Save As New Map</button>
                 </td>
             </tr>
         </table>

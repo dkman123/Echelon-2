@@ -82,12 +82,16 @@ elseif(filter_input(INPUT_POST, 't') == 'edit') :  // edit/update a mapconfig
     }
     exit;
 elseif(filter_input(INPUT_POST, 't') == 'add') :  // add a new mapconfig
-    $result = $db->addMapconfig($mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit);
-    if($result) {
-        sendGood($mapname."'s information has been saved");
-    }
-    else {
-        sendBack('There is a problem. The mapconfig has not been saved');
+    try{
+        $result = $db->addMapconfig($mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit);
+        if($result) {
+            sendGood($mapname."'s information has been saved");
+        }
+        else {
+            sendBack('There is a problem. The mapconfig has not been saved');
+        }
+    } catch( Exception $e ){
+        sendBack('There is a problem. The mapconfig has not been saved. ' . $e->getMessage());
     }
     exit;
 else :
