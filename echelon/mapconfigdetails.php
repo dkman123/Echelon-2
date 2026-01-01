@@ -165,6 +165,18 @@ function isValidDate(dateString)
                             <input type="number" name="timelimit" value="<?php echo $timelimit; ?>" maxlength="3" />
                         </td>
                     </tr>
+                    <tr>
+                        <th title="comma delimited list">game modes</th>
+                        <td>
+                            <input type="text" name="gamemodes" value="<?php echo $gamemodes; ?>" maxlength="50" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>bot</th>
+                        <td>
+                            <input type="number" name="bot" value="<?php echo $bot; ?>" maxlength="1" />
+                        </td>
+                    </tr>
 
 
                     <!--

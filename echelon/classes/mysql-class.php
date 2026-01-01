@@ -357,11 +357,11 @@ class DB_B3 {
      * ...
      * @return bool
      */
-    function addMapconfig($mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit) {
+    function addMapconfig($mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit, $gamemodes, $bot) {
         $time = time();
-        $query = "INSERT INTO mapconfig VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO mapconfig VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->mysql->prepare($query) or die('Database Error');
-        $stmt->bind_param('siisiisisi', $mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit);
+        $stmt->bind_param('siisiisisisi', $mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit, $gamemodes, $bot);
         $stmt->execute();
 
         if($stmt->affected_rows) {
@@ -398,10 +398,10 @@ class DB_B3 {
             }
     }
 	
-    function editMapconfig($id, $mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit) {
-        $query = "UPDATE mapconfig SET mapname = ?, capturelimit = ?, g_suddendeath = ?, g_gear = ? , g_gravity = ? , g_friendlyfire = ?, startmessage = ?, skiprandom = ?, datelastadd = ?, timelimit = ? WHERE id = ? LIMIT 1";
+    function editMapconfig($id, $mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit, $gamemodes, $bot) {
+        $query = "UPDATE mapconfig SET mapname = ?, capturelimit = ?, g_suddendeath = ?, g_gear = ? , g_gravity = ? , g_friendlyfire = ?, startmessage = ?, skiprandom = ?, datelastadd = ?, timelimit = ?, gamemodes = ?, bot = ? WHERE id = ? LIMIT 1";
         $stmt = $this->mysql->prepare($query) or die('Database Error');
-        $stmt->bind_param('siisiisisii', $mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit, $id);
+        $stmt->bind_param('siisiisisisii', $mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit, $gamemodes, $bot, $id);
         $stmt->execute();
 
         if($stmt->affected_rows == 1) {

@@ -10,7 +10,7 @@ require 'inc.php';
 ##########################
 ### NOTE: run b3 update b3_mapconfig-1.2.4.sql
 
-######## Varibles ########
+######## Variables ########
 
 ## number of rows to display in the mapcycle fixed-bottom section
 $mapcycleheight = 12;
@@ -43,7 +43,7 @@ if(filter_input(INPUT_GET, 'o')) {
 }
 
 // allowed things to sort by
-$allowed_orderby = array('id', 'mapname', 'capturelimit', 'g_suddendeath', 'g_gear', 'g_gravity', 'g_friendlyfire', 'startmessage', 'skiprandom', 'datelastadd', 'timelimit');
+$allowed_orderby = array('id', 'mapname', 'capturelimit', 'g_suddendeath', 'g_gear', 'g_gravity', 'g_friendlyfire', 'startmessage', 'skiprandom', 'datelastadd', 'timelimit', 'gamemodes', 'bot');
 // Check if the sent varible is in the allowed array 
 if(!in_array($orderby, $allowed_orderby)) {
     $orderby = 'mapname'; // if not just set to default
@@ -196,6 +196,12 @@ if(!$db->error) :
                 <th>time limit
                     <?php linkSortMaps('timelimit', 'timelimit', $is_search, $search_type, $search_string); ?>
                 </th>
+                <th>game modes
+                    <?php linkSortMaps('gamemodes', 'gamemodes', $is_search, $search_type, $search_string); ?>
+                </th>
+                <th>bot
+                    <?php linkSortMaps('bot', 'bot', $is_search, $search_type, $search_string); ?>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -214,6 +220,8 @@ if(!$db->error) :
                 $skiprandom = $mapconfig['skiprandom'];
                 $datelastadd = $mapconfig['datelastadd'];
                 $timelimit = $mapconfig['timelimit'];
+                $gamemodes = $mapconfig['gamemodes'];
+                $bot = $mapconfig['bot'];
 
                 //$time_edit = date($tformat, $time_edit);
 
@@ -239,6 +247,8 @@ if(!$db->error) :
                     <td id="sr$rec">$skiprandom</td>
                     <td id="dl$rec">$datelastadd</td>
                     <td id="tl$rec">$timelimit</td>
+                    <td id="gm$rec">$gamemodes</td>
+                    <td id="bt$rec">$bot</td>
                     <td id="mn$rec" style="display: none">$mapname</td>
                 </tr>
 EOD;
@@ -315,6 +325,8 @@ EOD;
         <input type="hidden" name="skiprandom" value="0" />
         <input type="hidden" name="datelastadd" value="2000-01-01" />
         <input type="hidden" name="timelimit" value="20" />
+        <input type="hidden" name="gamemodes" value="" />
+        <input type="hidden" name="bot" value="0" />
     </form>
     <form name="mapcycleform" method="post" action="actions/mapcycle.php">
         <input type="hidden" name="data" value="" />
@@ -343,6 +355,8 @@ function doAdd(rec){
             + '"\n    g_gravity "' + $("#gr" + rec).text().trim()
             + '"\n    g_friendlyfire "' + $("#ff" + rec).text().trim()
             + '"\n    timelimit "' + $("#tl" + rec).text().trim()
+            + '"\n    gamemodes "' + $("#gm" + rec).text().trim()
+            + '"\n    bot "' + $("#bt" + rec).text().trim()
             + '"\n}\n';
     }
     else {

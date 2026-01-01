@@ -18,6 +18,8 @@ $g_gear = cleanvar(filter_input(INPUT_POST, 'g_gear'));
 $g_gravity = cleanvar(filter_input(INPUT_POST, 'g_gravity'));
 $g_friendlyfire = cleanvar(filter_input(INPUT_POST, 'g_friendlyfire'));
 $timelimit = cleanvar(filter_input(INPUT_POST, 'timelimit'));
+$gamemodes = cleanvar(filter_input(INPUT_POST, 'gamemodes'));
+$bot = cleanvar(filter_input(INPUT_POST, 'bot'));
 
 
 if(filter_input(INPUT_POST, 'startmessage')) {
@@ -44,6 +46,12 @@ if(!is_numeric($skiprandom)) {
 }
 if(!is_numeric($timelimit)) {
     $timelimit = 20;
+}
+if(strlen($gamemodes) > 50) {
+    $gamemodes = substr($gamemodes, 0, 50);
+}
+if(!is_numeric($bot)) {
+    $bot = 0;
 }
 //if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $datelastadd)) {
 //    $datelastadd = "2000-01-01";
@@ -73,7 +81,7 @@ if(filter_input(INPUT_POST, 't') == 'del') : // delete mapconfig
     }
     exit;
 elseif(filter_input(INPUT_POST, 't') == 'edit') :  // edit/update a mapconfig
-    $result = $db->editMapconfig($id, $mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit);
+    $result = $db->editMapconfig($id, $mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit, $gamemodes, $bot);
     if($result) {
         sendGood($mapname."'s information has been updated");
     }
@@ -83,7 +91,7 @@ elseif(filter_input(INPUT_POST, 't') == 'edit') :  // edit/update a mapconfig
     exit;
 elseif(filter_input(INPUT_POST, 't') == 'add') :  // add a new mapconfig
     try{
-        $result = $db->addMapconfig($mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit);
+        $result = $db->addMapconfig($mapname, $capturelimit, $g_suddendeath, $g_gear, $g_gravity, $g_friendlyfire, $startmessage, $skiprandom, $datelastadd, $timelimit, $gamemodes, $bot);
         if($result) {
             sendGood($mapname."'s information has been saved");
         }

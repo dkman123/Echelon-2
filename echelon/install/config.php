@@ -1,6 +1,9 @@
 <?php
-if (!empty($_SERVER["SCRIPT_FILENAME"]) && "config.php" == basename($_SERVER["SCRIPT_FILENAME"]))
-		die ("Please do not load this page directly. Thanks!"); // do not edit
+if (!empty(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME'))
+        && "config.php" == basename(filter_input(INPUT_SERVER, 'SCRIPT_FILENAME'))
+        ) {
+    die ("Please do not load this page directly. Thanks!"); // do not edit
+}
 
 ##### Start Editing From below here #####
 define("DB_CON_ERROR_SHOW", TRUE); // show DB connection error if any (values: TRUE/FALSE)
