@@ -104,7 +104,7 @@ if($auth_user_here != false) { // some pages do not need auth but include this f
 if(!isLogin()) : // stop login page from using this and moving the vars
     //echlog("debug", "inc " . print_r($_SESSION['tokens']));
     if (!isset($_SESSION['tokens'])) {
-        var_dump($_SESSION['tokens']);
+        //var_dump($_SESSION['tokens']);
         $_SESSION['tokens'] = array("bad" => "");
     }
     $tokens = array();

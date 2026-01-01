@@ -220,7 +220,8 @@ if(!$db->error) :
                 $skiprandom = $mapconfig['skiprandom'];
                 $datelastadd = $mapconfig['datelastadd'];
                 $timelimit = $mapconfig['timelimit'];
-                $gamemodes = $mapconfig['gamemodes'];
+                // put spaces so the column can shrink
+                $gamemodes = str_replace(",", ", ", $mapconfig['gamemodes']);
                 $bot = $mapconfig['bot'];
 
                 //$time_edit = date($tformat, $time_edit);

@@ -45,6 +45,9 @@ $key_expire = $config['cosmos']['user_key_expire']; // This var says how long it
 $tformat = $config['cosmos']['time_format'];
 $time_zone = $config['cosmos']['time_zone'];
 
+## to override HTTPS setting to NOT required
+#$https_enabled = 0;
+
 // define email constant
 define("EMAIL", $config['cosmos']['email']);
 

@@ -100,6 +100,8 @@ input:checked+.slider:before{
 .deletebutton{
     background-image:url('../images/delete.png');
     background-repeat: no-repeat;
+    box-sizing: unset;
+    min-width: 7px;
 }
 .wrapword {
     white-space: -moz-pre-wrap !important;
