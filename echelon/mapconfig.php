@@ -158,7 +158,7 @@ if(!$db->error) :
         ?>
 </div>
 <div class="card-body table table-hover table-sm table-responsive">
-    <table width="100%">
+    <table id="mapList" width="100%">
         <thead>
             <tr>
                 <th>Del</th>
@@ -300,6 +300,22 @@ EOD;
                         <!-- The file can be a symlink to the actual file (if the web server follows symlinks) -->
                         <a href="<?php echo $mapcycleURL; ?>" target="_blank" style="color: #fff">Current mapcycle</a>
                     </th>
+                    <th title="Game Mode Filter">
+                        Filter&nbsp;&nbsp;
+                        <select id="gameModeFilter" onchange="onGameModeFilter()">
+                            <option value="" title="All">All</option>
+                            <option value="bm" titla="Bomb">bm</option>
+                            <option value="ctf" title="Capture The Flag">ctf</option>
+                            <option value="ffa" title="Free For All">ffa</option>
+                            <option value="ft" title="Freeze Tag">ft</option>
+                            <option value="ftl" title="Follow The Leader">ftl</option>
+                            <option value="gun" title="Gun Game">gun</option>
+                            <option value="jump" title="Jump">jump</option>
+                            <option value="lms" title="Last Man Standing">lms</option>
+                            <option value="tdm" title="Team Death Match">tdm</option>
+                            <option value="ts" title="Team Survivor">ts</option>
+                        </select>
+                    </th>
                     <th>
                         Map Cycle with config settings <input type="checkbox" id="cycleWithConfig" value="false" />
                     </th>
@@ -427,6 +443,22 @@ function doReadFile(){
         }
     });
 }
+
+function onGameModeFilter(){
+    var gm = $("#gameModeFilter").val();
+    // foreach tbody in maplist
+    //if column[14] (Game Modes) contains the (gm) game mode then display, else hide
+    $('#mapList tbody tr td:nth-child(14').each(function(index, element) {
+        var elem = $(this);
+        if (elem.text().includes(gm) || gm === "") {
+            elem.parent().show();
+        }
+        else {
+            elem.parent().hide();
+        }
+    });
+}
+
 </script>
 <?php
     else:

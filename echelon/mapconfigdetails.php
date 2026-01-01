@@ -166,9 +166,19 @@ function isValidDate(dateString)
                         </td>
                     </tr>
                     <tr>
-                        <th title="comma delimited list">game modes</th>
+                        <th title="comma delimited list, no spaces">game modes</th>
                         <td>
                             <input type="text" name="gamemodes" value="<?php echo $gamemodes; ?>" maxlength="50" />
+                            &nbsp;<span title="bomb = bm
+Capture The Flag = ctf
+Free For All = ffa
+Freeze Tag = ft
+Follow The Leader = ftl
+Gun Game = gun
+Jump = jump
+Last Man Standing = lms
+Team Death Match = tdm
+Team Survivor = ts" style="text-decoration: underline">hover for help</span>
                         </td>
                     </tr>
                     <tr>
