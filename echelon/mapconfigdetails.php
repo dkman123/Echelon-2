@@ -170,6 +170,7 @@ function isValidDate(dateString)
                         <td>
                             <input type="text" name="gamemodes" value="<?php echo $gamemodes; ?>" maxlength="50" />
                             &nbsp;<span title="bomb = bm
+Capture And Hold = cah
 Capture The Flag = ctf
 Free For All = ffa
 Freeze Tag = ft

@@ -305,6 +305,7 @@ EOD;
                         <select id="gameModeFilter" onchange="onGameModeFilter()">
                             <option value="" title="All">All</option>
                             <option value="bm" titla="Bomb">bm</option>
+                            <option value="cah" title="Capture And Hold">cah</option>
                             <option value="ctf" title="Capture The Flag">ctf</option>
                             <option value="ffa" title="Free For All">ffa</option>
                             <option value="ft" title="Freeze Tag">ft</option>
@@ -372,8 +373,9 @@ function doAdd(rec){
             + '"\n    g_gravity "' + $("#gr" + rec).text().trim()
             + '"\n    g_friendlyfire "' + $("#ff" + rec).text().trim()
             + '"\n    timelimit "' + $("#tl" + rec).text().trim()
-            + '"\n    gamemodes "' + $("#gm" + rec).text().trim()
-            + '"\n    bot "' + $("#bt" + rec).text().trim()
+            // don't write these out
+            ////+ '"\n    gamemodes "' + $("#gm" + rec).text().trim()
+            ////+ '"\n    bot "' + $("#bt" + rec).text().trim()
             + '"\n}\n';
     }
     else {
