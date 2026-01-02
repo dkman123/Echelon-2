@@ -199,7 +199,7 @@ if(!$db->error) :
                 <th>game modes
                     <?php linkSortMaps('gamemodes', 'gamemodes', $is_search, $search_type, $search_string); ?>
                 </th>
-                <th>bot
+                <th title="Bot Support: 0=No; 1=Yes">bot
                     <?php linkSortMaps('bot', 'bot', $is_search, $search_type, $search_string); ?>
                 </th>
             </tr>

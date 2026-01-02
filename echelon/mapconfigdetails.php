@@ -183,7 +183,7 @@ Team Survivor = ts" style="text-decoration: underline">hover for help</span>
                         </td>
                     </tr>
                     <tr>
-                        <th>bot</th>
+                        <th title="Bot Support: 0=No; 1=Yes">bot</th>
                         <td>
                             <input type="number" name="bot" value="<?php echo $bot; ?>" maxlength="1" />
                         </td>
