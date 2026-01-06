@@ -40,6 +40,7 @@ install php prerequisites (for old php)
 ```
 sudo apt install php
 sudo apt install php-mysqli
+sudo apt install php-mbstring
 ```
 with php7.4 you need to specify the version
 ```
@@ -146,27 +147,11 @@ source ~/Documents/Echelon-2/echelon-2.3.2-mapconfig.sql
 ```
 sudo mv ~/Documents/Echelon-2/echelon /var/www/html/echelon
 cd /var/www/html
-sudo chmod 664 echelon
-sudo chmod 775 echelon
-
-cd /var/www/html/echelon
-sudo chgrp -R www-data *
-
-# the web server needs to be able to write to these folders
-sudo chmod 775 install
-sudo chmod 775 inc
-sudo chmod 775 lib
-
-cd /var/www/html/echelon/install
-sudo chown www-data *
-# sudo chgrp www-data *
-
-cd /var/www/html/echelon/inc
-sudo chown www-data config.php
-sudo chmod 774 config.php
-
-cd /var/www/html/echelon
-sudo chmod 774 lib/log.txt
+sudo chown -R root:www-data echelon
+sudo chmod -R g+r echelon
+cd echelon
+# echelon(apache) needs to write to these
+sudo chown -R www-data:www-data install inc lib
 ```
 - NOTE: If you need to repeat installation:
 ```
